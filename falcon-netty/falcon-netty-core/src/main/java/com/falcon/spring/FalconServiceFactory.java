@@ -14,8 +14,21 @@ import java.lang.reflect.Proxy;
  */
 public class FalconServiceFactory implements FactoryBean{
 
+    /**
+     * 项目名称
+     */
     private String domain;
+    /**
+     * 接口
+     */
     private Class serviceInterface;
+    /**
+     * 超时时间
+     */
+    private long timeOut;
+    /**
+     * 分组
+     */
     private String group = "default";
     @Override
     public Object getObject() throws Exception {

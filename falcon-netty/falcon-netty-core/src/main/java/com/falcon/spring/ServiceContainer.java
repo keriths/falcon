@@ -22,7 +22,7 @@ public class ServiceContainer implements Serializable{
     @Setter
     private String group = "default";
     @Setter
-    private int port = 1155;
+    private int port = 32526;
     @Setter
     private Map<Class,Object> serviceProviders;
 
