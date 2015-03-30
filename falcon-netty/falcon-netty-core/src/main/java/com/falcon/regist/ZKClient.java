@@ -1,5 +1,6 @@
 package com.falcon.regist;
 
+import com.falcon.client.ZKManager;
 import com.falcon.server.ServiceProviderManager;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -19,7 +20,7 @@ import java.util.concurrent.Executor;
  */
 public class ZKClient {
     private CuratorFramework curatorFramework ;
-    private String zkAddress ="192.168.120.130:2182";
+    private String zkAddress = ZKManager.getZKAddress();
     public ZKClient() throws Exception{
         curatorFramework = CuratorFrameworkFactory.newClient(zkAddress,new ExponentialBackoffRetry(1000, 3));
         curatorFramework.getConnectionStateListenable().addListener(new MyConnectionStateListener());

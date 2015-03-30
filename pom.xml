@@ -19,5 +19,21 @@
         <module>netty-test</module>
         <module>falcon-netty</module>
     </modules>
+    <properties>
+        <mvn.host>192.168.120.130:8081</mvn.host>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Releases Repository</name>
+            <url>http://${mvn.host}/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshots Repository</name>
+            <url>http://${mvn.host}/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

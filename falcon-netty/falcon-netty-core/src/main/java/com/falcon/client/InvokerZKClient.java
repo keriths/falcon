@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class InvokerZKClient {
     private CuratorFramework curatorFramework ;
-    private String zkAddress ="192.168.120.130:2182";
+    private String zkAddress = ZKManager.getZKAddress();
     public InvokerZKClient() throws Exception{
         curatorFramework = CuratorFrameworkFactory.newClient(zkAddress, new ExponentialBackoffRetry(1000, 3));
         curatorFramework.getConnectionStateListenable().addListener(new MyConnectionStateListener());

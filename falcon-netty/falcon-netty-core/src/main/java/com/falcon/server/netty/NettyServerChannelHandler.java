@@ -9,11 +9,16 @@ import org.jboss.netty.channel.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by fanshuai on 15-1-23.
  */
 public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
+    ExecutorService threadPool =  Executors.newCachedThreadPool();
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
             throws Exception {
         //e.getChannel().write("Hello, World");
@@ -28,9 +33,9 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
         }
     }
 
-    public void doRequest(final FalconRequest request, final Channel channel){
+    public Future doRequest(final FalconRequest request, final Channel channel){
         //后面修改成线程池
-        new Thread(){
+        Thread t = new Thread(){
             @Override
             public void run() {
                 FalconResponse response = new FalconResponse();
@@ -57,7 +62,8 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     channel.write(response);
                 }
             }
-        }.start();
+        };
+        return threadPool.submit(t);
     }
 
 
