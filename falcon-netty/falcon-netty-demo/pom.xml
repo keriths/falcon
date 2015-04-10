@@ -12,9 +12,9 @@
     <artifactId>falcon-netty-demo</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>api</module>
-        <module>customer</module>
-        <module>provider</module>
+        <module>falcon-netty-demo-api</module>
+        <module>falcon-netty-demo-customer</module>
+        <module>falcon-netty-demo-provider</module>
     </modules>
 
 
