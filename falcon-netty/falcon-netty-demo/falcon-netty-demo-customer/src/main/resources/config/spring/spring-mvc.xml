@@ -21,5 +21,11 @@
             </list>
         </property>
     </bean>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/ajax/*"/>
+            <bean class="com.falcon.demo.action.LoginInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>
