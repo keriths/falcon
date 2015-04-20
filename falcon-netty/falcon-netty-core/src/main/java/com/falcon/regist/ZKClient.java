@@ -26,11 +26,26 @@ public class ZKClient {
         curatorFramework.getConnectionStateListenable().addListener(new MyConnectionStateListener());
         curatorFramework.getCuratorListenable().addListener(new MyListenner());
         curatorFramework.start();
-        curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut();
+        boolean hasConnected = curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut();
+        if (!hasConnected){
+            throw new RuntimeException("zkServer("+zkAddress+") cont connected ");
+        }
+        if(!curatorFramework.getZookeeperClient().isConnected()){
+            throw new RuntimeException("zkServer("+zkAddress+") has not connected ");
+        }
+    }
+    public long getSessionId()throws Exception{
+        return curatorFramework.getZookeeperClient().getZooKeeper().getSessionId();
+    }
+    public boolean isConnected(){
+        return curatorFramework.getZookeeperClient().isConnected();
     }
 
     public void createNodeWithEPHEMERAL(String path,byte[] data) throws Exception {
         curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, data);
+    }
+    public void deleteNode(String path)throws Exception{
+        curatorFramework.delete().forPath(path);
     }
 
     public boolean existsNode(String pathNode) throws Exception {
@@ -39,6 +54,10 @@ public class ZKClient {
             return false;
         }
         return true;
+    }
+    public Stat nodeStat(String pathNode) throws Exception {
+        Stat stat = curatorFramework.checkExists().forPath(pathNode);
+        return stat;
     }
 
     class MyListenner implements CuratorListener {
@@ -55,7 +74,7 @@ public class ZKClient {
                 while (true) {
                     try {
                         if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
-                            //处理重新注册
+                            ServiceProviderManager.registService();
                             break;
                         }
                     } catch (InterruptedException e) {

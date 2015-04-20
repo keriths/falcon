@@ -5,14 +5,13 @@ package com.falcon.client;
  */
 public class ZKManager {
     private static String zkAddress;
-    static {
-        String address = System.getProperty("falcon.zk.address");
-        if (address==null) {
-            throw new RuntimeException("please setting \"zk.address\" in vm properties with -D ");
-        }
-        zkAddress = address;
-    }
     public static String getZKAddress(){
+        if(zkAddress==null){
+            zkAddress = System.getProperty("falcon.zk.address");
+            if(zkAddress==null){
+                throw new RuntimeException("please setting \"zk.address\" in vm properties with -D ");
+            }
+        }
         return zkAddress;
     }
 }

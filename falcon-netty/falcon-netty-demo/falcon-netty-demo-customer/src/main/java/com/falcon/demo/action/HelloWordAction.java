@@ -16,13 +16,12 @@ import java.util.List;
  */
 @Controller
 public class HelloWordAction {
-    //@Resource(name = "helloWordService")
-    //private HelloWordService helloWordService;
+    @Resource(name = "helloWordService")
+    private HelloWordService helloWordService;
     @RequestMapping(value = "/ajax/{name:[a-z]+}")
     @ResponseBody
     public Object ajax_json(@PathVariable String name){
-
-        return name;
+        return helloWordService.sayHello(name);
     }
 
     // /ajax/obj?name=aaa&val=aab

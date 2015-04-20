@@ -27,8 +27,7 @@ public class CustomerManager {
         customerConfigList.add(customerConfig);
         List<ProviderZKNodeConfig> providerZKNodeConfigList = InvokerZKClientFactory.getClient().getProviders(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());
         if(providerZKNodeConfigList==null || providerZKNodeConfigList.isEmpty()){
-            //TODO没有取到客户諯怎么办呢
-            return;
+            throw new Exception(customerConfig.getDomain()+" "+customerConfig.getServiceInterface()+" 服务提供者没有");
         }
 
         String erviceClientsMapKey=getServiceClientsMapKey(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());

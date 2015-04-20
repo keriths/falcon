@@ -20,19 +20,19 @@
         <module>falcon-netty</module>
     </modules>
     <properties>
-        <mvn.host>192.168.120.130:8081</mvn.host>
+        <mvn.host>mvn.leya.com</mvn.host>
     </properties>
 
     <distributionManagement>
         <repository>
-            <id>nexus-releases</id>
+            <id>Releases</id>
             <name>Nexus Releases Repository</name>
-            <url>http://${mvn.host}/nexus/content/repositories/releases/</url>
+            <url>http://${mvn.host}/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>nexus-snapshots</id>
+            <id>Snapshots</id>
             <name>Nexus Snapshots Repository</name>
-            <url>http://${mvn.host}/nexus/content/repositories/snapshots/</url>
+            <url>http://${mvn.host}/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 

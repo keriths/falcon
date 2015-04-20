@@ -1,5 +1,6 @@
 package com.falcon.server.netty;
 
+import com.falcon.util.NetTools;
 import lombok.Data;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
@@ -41,9 +42,9 @@ public class NettyServer implements Server {
             if(started){
                 return ;
             }
-            int port = getAvailablePort(acturyPort);
-            ip = InetAddress.getLocalHost().getHostAddress();
-            InetSocketAddress address = new InetSocketAddress(ip,port);
+            ip = NetTools.getFirstLocalIp();
+            int port = NetTools.getAvailablePort(acturyPort);
+            InetSocketAddress address = new InetSocketAddress(port);
             acturyPort = port;
             ServerBootstrap serverBootstrap = new ServerBootstrap(
                     new NioServerSocketChannelFactory(
@@ -73,43 +74,6 @@ public class NettyServer implements Server {
             this.channel.unbind();
         }
     }
-    public static int getAvailablePort(int defaultPort) {
-        int port = defaultPort;
-        while (port < 65535) {
-            if (!isPortInUse(port)) {
-                return port;
-            } else {
-                port++;
-            }
-        }
-        while (port > 0) {
-            if (!isPortInUse(port)) {
-                return port;
-            } else {
-                port--;
-            }
-        }
-        throw new IllegalStateException("no available port");
-    }
-
-    public static boolean isPortInUse(int port) {
-        boolean inUse = false;
-        ServerSocket ss = null;
-        try {
-            ss = new ServerSocket(port);
-            inUse = false;
-        } catch (IOException e) {
-            inUse = true;
-        } finally {
-            if (ss != null) {
-                try {
-                    ss.close();
-                } catch (IOException e) {
-                }
-            }
-        }
-        return inUse;
-    }
 
 
     @Override
@@ -131,5 +95,12 @@ public class NettyServer implements Server {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+
+
+
+    public static void main (String[] args){
+        //InetAddress.getLocalHost()
     }
 }

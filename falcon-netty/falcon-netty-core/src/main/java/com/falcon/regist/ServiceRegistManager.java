@@ -28,18 +28,25 @@ public class ServiceRegistManager {
         String domain = providerConfig.getDomain();
         String interfaceName=providerConfig.getServiceInterface().getName();
         String pathNode = getServicePathNode(domain,interfaceName,providerConfig.getServerConfig().getIp(),providerConfig.getServerConfig().getPort());
-        if(!getZKClient().existsNode(pathNode)){
-            ProviderZKNodeConfig nodeValue = new ProviderZKNodeConfig();
-            nodeValue.setDomain(domain);
-            nodeValue.setService(interfaceName);
-            nodeValue.setHost(providerConfig.getServerConfig().getIp());
-            nodeValue.setPort(providerConfig.getServerConfig().getPort());
-            nodeValue.setProtocol(providerConfig.getServerConfig().getProtocol());
-            nodeValue.setGroup(providerConfig.getGroup());
-            nodeValue.setWeight(1);
-            String jsonValue = JSON.toJSONString(nodeValue);
-            getZKClient().createNodeWithEPHEMERAL(pathNode, jsonValue.getBytes());
+        if(getZKClient().existsNode(pathNode)) {
+            long sessionId = getZKClient().getSessionId();
+            long owner = getZKClient().nodeStat(pathNode).getEphemeralOwner();
+            if(owner==sessionId){
+                //已经存在自己创建的临时节点，直接返回，否则删除重建
+                return ;
+            }
+            getZKClient().deleteNode(pathNode);
         }
+        ProviderZKNodeConfig nodeValue = new ProviderZKNodeConfig();
+        nodeValue.setDomain(domain);
+        nodeValue.setService(interfaceName);
+        nodeValue.setHost(providerConfig.getServerConfig().getIp());
+        nodeValue.setPort(providerConfig.getServerConfig().getPort());
+        nodeValue.setProtocol(providerConfig.getServerConfig().getProtocol());
+        nodeValue.setGroup(providerConfig.getGroup());
+        nodeValue.setWeight(1);
+        String jsonValue = JSON.toJSONString(nodeValue);
+        getZKClient().createNodeWithEPHEMERAL(pathNode, jsonValue.getBytes());
     }
 
     public static String getServicePathNode(String domain,String interfaceName,String host,int port){
