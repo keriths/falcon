@@ -18,8 +18,8 @@ import java.util.concurrent.Executors;
  */
 public class NettyClient  {
     private ClientBootstrap bootstrap;
-    private String ip = "10.128.120.227";
-    private int port = 1119;
+    private String ip ;
+    private int port ;
     Channel channel;
     public NettyClient(String host,int port){
         this.ip=host;
@@ -46,17 +46,14 @@ public class NettyClient  {
         bootstrap.setOption("keepAlive", true);
         bootstrap.setOption("reuseAddress", true);
         //创建无连接传输channel的辅助类(UDP),包括client和server
-        String ip = null;
-        try {
-            ip = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
         InetSocketAddress address = new InetSocketAddress(ip, port);
         // InetSocketAddress i = new InetSocketAddress( port);
         ChannelFuture future = bootstrap.connect(address);
         channel = future.getChannel();
+    }
 
+    public boolean isConnected(){
+        return channel.isConnected();
     }
 
     public void write(final FalconRequest request){
@@ -76,8 +73,15 @@ public class NettyClient  {
     }
 
 
+
     public void close() {
-        channel.close();
-        bootstrap.releaseExternalResources();
+        try {
+            channel.close();
+            bootstrap.releaseExternalResources();
+        }catch (Exception e){
+            channel = null;
+            bootstrap = null;
+        }
+
     }
 }

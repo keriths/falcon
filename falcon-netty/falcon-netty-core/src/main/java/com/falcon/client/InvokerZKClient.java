@@ -26,7 +26,13 @@ public class InvokerZKClient {
         curatorFramework.getConnectionStateListenable().addListener(new MyConnectionStateListener());
         curatorFramework.getCuratorListenable().addListener(new MyListenner());
         curatorFramework.start();
-        curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut();
+        boolean hasConnected = curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut();
+        if (!hasConnected){
+            throw new RuntimeException("zkServer("+zkAddress+") cont connected ");
+        }
+        if(!curatorFramework.getZookeeperClient().isConnected()){
+            throw new RuntimeException("zkServer("+zkAddress+") has not connected ");
+        }
     }
 
     public List<ProviderZKNodeConfig> getProviders(String domain,String interfaceName) throws Exception {

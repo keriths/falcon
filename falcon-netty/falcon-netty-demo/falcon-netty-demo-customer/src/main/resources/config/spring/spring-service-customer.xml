@@ -11,7 +11,7 @@
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
 
-    <bean id="helloWordService" class="com.falcon.spring.FalconServiceFactory" lazy-init="true">
+    <bean id="helloWordService" class="com.falcon.spring.FalconServiceFactory" lazy-init="false">
         <property name="domain" value="falcon_netty_demo_provider"/>
         <property name="serviceInterface" value="com.falcon.demo.api.HelloWordService"/>
     </bean>

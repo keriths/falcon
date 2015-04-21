@@ -2,11 +2,12 @@ package com.falcon.client;
 
 import com.falcon.config.ProviderZKNodeConfig;
 import com.falcon.server.servlet.FalconRequest;
+import com.falcon.util.FalconAssignTools;
+import com.google.common.base.Strings;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by fanshuai on 15-2-11.
@@ -18,7 +19,7 @@ public class CustomerManager {
 
 
     private static String getServiceClientsMapKey(String domain,String interfaceName){
-        return domain+"_"+interfaceName;
+        return domain+"&"+interfaceName;
     }
     private static String getAllClientKey(String host,int port){
         return host+":"+port;
@@ -52,19 +53,65 @@ public class CustomerManager {
         new Thread(){
             @Override
             public void run() {
-                List<FalconCustomerClient> clients = serviceClientsMap.get(getServiceClientsMapKey(customerConfig.getDomain(), customerConfig.getServiceInterface().getName()));
-                FalconCustomerClient client = selectClient(clients);
-                InvokerContext invokerContext = new InvokerContext(request,customerConfig,callBack);
-                requestIng.put(request.getSequence(),invokerContext);
-                client.doRequest(request, invokerContext);
+                try {
+                    FalconCustomerClient client = getClient(customerConfig);
+                    InvokerContext invokerContext = new InvokerContext(request,customerConfig,callBack);
+                    requestIng.put(request.getSequence(),invokerContext);
+                    client.doRequest(request, invokerContext);
+                }catch (Exception e){
+                    callBack.processFailedResponse(e);
+                }
             }
         }.start();
-        return callBack.get();
+        return callBack.get(customerConfig.getTimeout());
     }
-    private static FalconCustomerClient selectClient(List<FalconCustomerClient> clients){
-        if(clients==null || clients.isEmpty()){
-            return null;
+    private static FalconCustomerClient getClient(CustomerConfig customerConfig) throws Exception {
+        String key = getServiceClientsMapKey(customerConfig.getDomain(), customerConfig.getServiceInterface().getName());
+        FalconCustomerClient client;
+        String assignClient = FalconAssignTools.getProperty(key);
+        System.out.println(assignClient);
+        try {
+            if(!StringUtils.isEmpty(assignClient)){
+                client = allClient.get(assignClient);
+                if(client==null){
+                    throw new Exception(assignClient+" client not found ");
+                }
+            }else{
+                List<FalconCustomerClient> clients = serviceClientsMap.get(key);
+                client = selectClient(clients);
+            }
+            return client;
+        }catch (Exception e){
+            throw new Exception("服务提供者["+key+"] "+e.getMessage(),e);
         }
-        return clients.get(0);
+    }
+
+    private static FalconCustomerClient selectClient(List<FalconCustomerClient> clients) throws Exception {
+        if(clients==null || clients.isEmpty()){
+            throw new Exception("服务提供者 not fund client");
+        }
+        int index = randomIndex(clients.size());
+        FalconCustomerClient c = clients.get(index);
+        if (c.isConnected()){
+            return c;
+        }
+        if(c.reInitClient()){
+            return c;
+        }
+        throw new Exception("服务提供者["+c.getHost()+":"+c.getPort()+"] client is dead");
+    }
+    private static int randomIndex(int size){
+        if(size<=1){
+            return 0;
+        }
+        Random r = new Random();
+        int a = r.nextInt(size);
+        return a%size;
+    }
+    public static void main(String [] args){
+        for(int i = 0;i<100;i++){
+
+        System.out.println(randomIndex(20));
+        }
     }
 }

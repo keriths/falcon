@@ -7,6 +7,7 @@ public class CustomerConfig {
     private String domain;
     private Class serviceInterface;
     private String group = "default";
+    private long timeout = 3000;
 
 
     public String getDomain() {
@@ -31,5 +32,13 @@ public class CustomerConfig {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 }

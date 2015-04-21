@@ -4,6 +4,7 @@ import com.falcon.client.CustomerConfig;
 import com.falcon.client.CustomerManager;
 import com.falcon.server.servlet.FalconRequest;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -12,19 +13,24 @@ import java.lang.reflect.Proxy;
 /**
  * Created by fanshuai on 15-2-11.
  */
-public class FalconServiceFactory implements FactoryBean{
+public class FalconServiceFactory implements FactoryBean,InitializingBean{
 
     private String domain;
     private Class serviceInterface;
     private String group = "default";
+    private CustomerConfig customerConfig ;
     @Override
     public Object getObject() throws Exception {
-        CustomerConfig customerConfig = new CustomerConfig();
+        return Proxy.newProxyInstance(FactoryBean.class.getClassLoader(),new Class[]{serviceInterface},new FalconServiceInvocationHandler(customerConfig));
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        customerConfig = new CustomerConfig();
         customerConfig.setDomain(domain);
         customerConfig.setServiceInterface(serviceInterface);
         customerConfig.setGroup(group);
         CustomerManager.addCustomer(customerConfig);
-        return Proxy.newProxyInstance(FactoryBean.class.getClassLoader(),new Class[]{serviceInterface},new FalconServiceInvocationHandler(customerConfig));
     }
 
     class FalconServiceInvocationHandler implements InvocationHandler{

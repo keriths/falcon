@@ -6,7 +6,6 @@ import com.falcon.server.servlet.FalconResponse;
  * Created by fanshuai on 15-2-11.
  */
 public class InvokerCallBack {
-    private long timeOut = 3000;
     private boolean hasComplace = false;
     private Object returnObject;
     private boolean hasError = false;
@@ -19,7 +18,7 @@ public class InvokerCallBack {
         }
     }
 
-    public Object get() throws Exception {
+    public Object get(long timeOut) throws Exception {
         synchronized (this){
             long lastTime = timeOut;
             while (!hasComplace){
