@@ -21,9 +21,7 @@ public class FalconCustomerClient {
        return client.isConnected();
     }
 
-    public boolean reInitClient(){
-        client.close();
-        client = new NettyClient(host,port);
+    public boolean connect(){
         client.connect();
         return client.isConnected();
     }

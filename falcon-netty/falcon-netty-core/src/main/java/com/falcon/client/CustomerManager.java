@@ -95,7 +95,8 @@ public class CustomerManager {
         if (c.isConnected()){
             return c;
         }
-        if(c.reInitClient()){
+        c.connect();
+        if(c.isConnected()){
             return c;
         }
         throw new Exception("服务提供者["+c.getHost()+":"+c.getPort()+"] client is dead");

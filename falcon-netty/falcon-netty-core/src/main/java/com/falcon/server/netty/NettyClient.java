@@ -7,11 +7,13 @@ import com.falcon.server.servlet.FalconRequest;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import sun.org.mozilla.javascript.internal.ast.CatchClause;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by fanshuai on 15-2-10.
@@ -24,10 +26,8 @@ public class NettyClient  {
     public NettyClient(String host,int port){
         this.ip=host;
         this.port = port;
-    }
-    public void connect() {
         //创建客户端channel的辅助类,发起connection请求
-        ClientBootstrap bootstrap = new ClientBootstrap(
+        bootstrap = new ClientBootstrap(
                 new NioClientSocketChannelFactory(
                         Executors.newCachedThreadPool(),
                         Executors.newCachedThreadPool()));
@@ -45,11 +45,30 @@ public class NettyClient  {
         bootstrap.setOption("tcpNoDelay", true);
         bootstrap.setOption("keepAlive", true);
         bootstrap.setOption("reuseAddress", true);
+    }
+    public synchronized void connect() {
+
         //创建无连接传输channel的辅助类(UDP),包括client和server
         InetSocketAddress address = new InetSocketAddress(ip, port);
         // InetSocketAddress i = new InetSocketAddress( port);
         ChannelFuture future = bootstrap.connect(address);
-        channel = future.getChannel();
+        if(!future.awaitUninterruptibly(500l, TimeUnit.MILLISECONDS)){
+            return;
+        }
+        if(!future.isSuccess()){
+            return ;
+        }
+        Channel newChannel = future.getChannel();
+        try {
+            Channel oldChannel = this.channel;
+            if(oldChannel!=null){
+                oldChannel.close();
+            }
+        } catch (Exception e){
+
+        }finally {
+            this.channel = newChannel;
+        }
     }
 
     public boolean isConnected(){
