@@ -22,7 +22,9 @@ public class ZKClient {
     private CuratorFramework curatorFramework ;
     private String zkAddress = ZKManager.getZKAddress();
     public ZKClient() throws Exception{
-        curatorFramework = CuratorFrameworkFactory.newClient(zkAddress,new ExponentialBackoffRetry(1000, 3));
+        int sessionTimeoutMs = 500;
+        int connectionTimeoutMs = 5000;
+        curatorFramework = CuratorFrameworkFactory.newClient(zkAddress,sessionTimeoutMs,connectionTimeoutMs,new ExponentialBackoffRetry(1000, 3));
         curatorFramework.getConnectionStateListenable().addListener(new MyConnectionStateListener());
         curatorFramework.getCuratorListenable().addListener(new MyListenner());
         curatorFramework.start();
@@ -33,6 +35,7 @@ public class ZKClient {
         if(!curatorFramework.getZookeeperClient().isConnected()){
             throw new RuntimeException("zkServer("+zkAddress+") has not connected ");
         }
+        System.out.println(sessionTimeoutMs+"   "+curatorFramework.getZookeeperClient().getZooKeeper().getSessionTimeout()+"-----------------------------");
     }
     public long getSessionId()throws Exception{
         return curatorFramework.getZookeeperClient().getZooKeeper().getSessionId();
