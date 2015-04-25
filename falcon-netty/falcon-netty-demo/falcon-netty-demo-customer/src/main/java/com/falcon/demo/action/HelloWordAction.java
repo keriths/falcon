@@ -1,12 +1,11 @@
 package com.falcon.demo.action;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.falcon.demo.api.HelloWordService;
 import com.falcon.demo.api.dto.HelloDTO;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -57,4 +56,12 @@ public class HelloWordAction {
     public Object ajax_list2(@RequestParam(value =  "name",required = false) List<String> names){
         return names;
     }
+
+    @RequestMapping(value = "/test/requestBody")
+    @ResponseBody
+    public Object requestBody(@RequestBody String jsonBody){
+        JSONObject json = JSON.parseObject(jsonBody);
+        return "aa:"+json.get("name");
+    }
+
 }
