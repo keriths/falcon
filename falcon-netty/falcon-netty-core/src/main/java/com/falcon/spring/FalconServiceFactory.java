@@ -19,6 +19,7 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
     private Class serviceInterface;
     private String group = "default";
     private CustomerConfig customerConfig ;
+    private long timeOut = 3000;
     @Override
     public Object getObject() throws Exception {
         return Proxy.newProxyInstance(FactoryBean.class.getClassLoader(),new Class[]{serviceInterface},new FalconServiceInvocationHandler(customerConfig));
@@ -30,6 +31,7 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
         customerConfig.setDomain(domain);
         customerConfig.setServiceInterface(serviceInterface);
         customerConfig.setGroup(group);
+        customerConfig.setTimeout(timeOut);
         CustomerManager.addCustomer(customerConfig);
     }
 
@@ -81,5 +83,13 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public long getTimeOut() {
+        return timeOut;
+    }
+
+    public void setTimeOut(long timeOut) {
+        this.timeOut = timeOut;
     }
 }
