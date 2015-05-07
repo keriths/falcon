@@ -7,7 +7,6 @@ import com.falcon.server.servlet.FalconRequest;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-import sun.org.mozilla.javascript.internal.ast.CatchClause;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;

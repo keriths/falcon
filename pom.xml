@@ -18,6 +18,7 @@
         <module>falcon-demo</module>
         <module>netty-test</module>
         <module>falcon-netty</module>
+        <module>cacheClient</module>
     </modules>
     <properties>
         <mvn.host>mvn.leya.com</mvn.host>
