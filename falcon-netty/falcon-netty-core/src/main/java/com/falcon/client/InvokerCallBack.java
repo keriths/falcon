@@ -11,15 +11,19 @@ public class InvokerCallBack {
     private boolean hasError = false;
     private Throwable throwable;
     public void processResponse(FalconResponse response){
-        //synchronized (this){
+        synchronized (this){
             returnObject = response.getRetObject();
+            if(response.getThrowable()!=null){
+                this.throwable = response.getThrowable();
+                hasError = true;
+            }
             hasComplace = true;
             notifyAll();
-        //}
+        }
     }
 
     public Object get(long timeOut) throws Exception {
-        //synchronized (this){
+        synchronized (this){
             long lastTime = timeOut;
             while (!hasComplace){
                 try {
@@ -35,17 +39,17 @@ public class InvokerCallBack {
             if (hasError){
                 throw new Exception(throwable);
             }
-        //}
+        }
         return returnObject;
 
     }
 
     public void processFailedResponse(Throwable cause) {
-        //synchronized (this) {
+        synchronized (this) {
             this.throwable = cause;
             hasComplace = true;
             hasError = true;
             notifyAll();
-        //}
+        }
     }
 }

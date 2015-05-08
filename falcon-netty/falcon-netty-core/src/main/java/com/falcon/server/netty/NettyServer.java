@@ -100,7 +100,4 @@ public class NettyServer implements Server {
 
 
 
-    public static void main (String[] args){
-        //InetAddress.getLocalHost()
-    }
 }

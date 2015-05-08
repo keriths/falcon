@@ -28,7 +28,7 @@ public class CustomerManager {
         customerConfigList.add(customerConfig);
         List<ProviderZKNodeConfig> providerZKNodeConfigList = InvokerZKClientFactory.getClient().getProviders(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());
         if(providerZKNodeConfigList==null || providerZKNodeConfigList.isEmpty()){
-            throw new Exception(customerConfig.getDomain()+" "+customerConfig.getServiceInterface()+" 服务提供者没有");
+            throw new Exception(customerConfig.getDomain()+" "+customerConfig.getServiceInterface()+" not found provider");
         }
 
         String erviceClientsMapKey=getServiceClientsMapKey(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());
@@ -82,13 +82,13 @@ public class CustomerManager {
             }
             return client;
         }catch (Exception e){
-            throw new Exception("服务提供者["+key+"] "+e.getMessage(),e);
+            throw new Exception("service provider ["+key+"] "+e.getMessage(),e);
         }
     }
 
     private static FalconCustomerClient selectClient(List<FalconCustomerClient> clients) throws Exception {
         if(clients==null || clients.isEmpty()){
-            throw new Exception("服务提供者 not fund client");
+            throw new Exception("service provider not fund client");
         }
         int index = randomIndex(clients.size());
         FalconCustomerClient c = clients.get(index);
@@ -99,7 +99,7 @@ public class CustomerManager {
         if(c.isConnected()){
             return c;
         }
-        throw new Exception("服务提供者["+c.getHost()+":"+c.getPort()+"] client is dead");
+        throw new Exception("service provider["+c.getHost()+":"+c.getPort()+"] client is dead");
     }
     private static int randomIndex(int size){
         if(size<=1){

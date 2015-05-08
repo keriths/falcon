@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by fanshuai on 15-2-10.
  */
 public class FalconResponse implements Serializable{
-    private Exception exception;
+    private Throwable throwable;
     private long sequence;
     private Object retObject;
 
@@ -27,11 +27,11 @@ public class FalconResponse implements Serializable{
         this.retObject = retObject;
     }
 
-    public Exception getException() {
-        return exception;
+    public Throwable getThrowable() {
+        return throwable;
     }
 
-    public void setException(Exception exception) {
-        this.exception = exception;
+    public void setThrowable(Throwable throwable) {
+        this.throwable = throwable;
     }
 }

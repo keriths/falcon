@@ -1,9 +1,11 @@
 package com.falcon.demo.api.dto;
 
+import java.io.Serializable;
+
 /**
  * Created by fanshuai on 15/4/7.
  */
-public class HelloDTO {
+public class HelloDTO implements Serializable{
     private String name;
     private String val;
 

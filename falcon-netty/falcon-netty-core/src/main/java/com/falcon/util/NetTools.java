@@ -1,10 +1,7 @@
 package com.falcon.util;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -38,8 +35,10 @@ public class NetTools {
         List<InetAddress> allInetAddresses = getAllLocalAddress();
 
         for (InetAddress address : allInetAddresses) {
-            if (!address.isLoopbackAddress() && !address.isLinkLocalAddress()) {
-                noLoopbackAddresses.add(address.getHostAddress());
+            if(address instanceof Inet4Address){
+                if (!address.isLoopbackAddress() && !address.isLinkLocalAddress()) {
+                    noLoopbackAddresses.add(address.getHostAddress());
+                }
             }
         }
 

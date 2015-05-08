@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,11 @@ public class HelloWordAction {
     @RequestMapping(value = "/ajax/{name:[a-z]+}")
     @ResponseBody
     public Object ajax_json(@PathVariable String name){
+        HelloDTO d = new HelloDTO();
+        List ll = new ArrayList();
+        ll.add(d);
+        Object l = helloWordService.hellolist(ll);
+        System.out.println("******"+l);
         return helloWordService.sayHello(name);
     }
 

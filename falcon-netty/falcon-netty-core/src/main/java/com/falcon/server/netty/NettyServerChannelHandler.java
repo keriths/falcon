@@ -4,15 +4,14 @@ import com.falcon.server.ServiceProviderManager;
 import com.falcon.server.method.ServiceMethod;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
-import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.*;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by fanshuai on 15-1-23.
@@ -47,17 +46,27 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     Class[] paramTypes = request.getParameterTypes();
                     ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName,methodName,ServiceMethod.getParamNameString(paramTypes));
                     if(serviceMethod==null){
-                        response.setException(new Exception("method not found"));
+                        response.setThrowable(new Exception("method not found"));
                     }else{
                         Object o = serviceMethod.invoke(paramters);
+                        if(o!=null && !(o instanceof Serializable)){
+                            throw new Exception(o.getClass().getName() +" no serializable ");
+                        }
                         response.setRetObject(o);
                     }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                    response.setException(e);
+                    response.setThrowable(e);
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
-                    response.setException(e);
+                    if(e.getTargetException()!=null){
+                        response.setThrowable(e.getTargetException());
+                    }else {
+                        response.setThrowable(e);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    response.setThrowable(e);
                 } finally {
                     channel.write(response);
                 }

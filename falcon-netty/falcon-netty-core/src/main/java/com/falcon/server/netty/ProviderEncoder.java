@@ -2,6 +2,10 @@ package com.falcon.server.netty;
 
 import com.caucho.hessian.io.Hessian2Output;
 import com.caucho.hessian.io.SerializerFactory;
+import com.falcon.client.CustomerManager;
+import com.falcon.client.InvokerContext;
+import com.falcon.server.servlet.FalconRequest;
+import com.falcon.server.servlet.FalconResponse;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -28,13 +32,32 @@ public class ProviderEncoder extends OneToOneEncoder {
         return channelBuffer;
     }
     public void serializeRequest(OutputStream os, Object obj) throws Exception {
+        System.out.println(obj.getClass().getName());
         Hessian2Output h2out = new Hessian2Output(os);
         h2out.setSerializerFactory(new SerializerFactory());
         try {
             h2out.writeObject(obj);
             h2out.flush();
         } catch (Throwable t) {
+            if (obj instanceof FalconResponse){
+                ((FalconResponse) obj).setRetObject(null);
+                ((FalconResponse) obj).setThrowable(t);
+                h2out.reset();
+                h2out.writeObject(obj);
+                h2out.flush();
+                return ;
+            }
+            if(obj instanceof FalconRequest){
+                long seq = ((FalconRequest) obj).getSequence();
+                InvokerContext invokerContext = CustomerManager.requestIng.get(seq);
+                if (invokerContext!=null){
+                    invokerContext.getCallBack().processFailedResponse(t);
+                    CustomerManager.requestIng.remove(seq);
+                }
+                throw new Exception(t);
+            }
             throw new Exception(t);
+
         } finally {
             try {
                 h2out.close();

@@ -3,6 +3,9 @@ package com.falcon.demo.provider;
 import com.falcon.demo.api.HelloWordService;
 import com.falcon.demo.api.dto.HelloDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by fanshuai on 15/4/7.
  */
@@ -12,13 +15,30 @@ public class HelloWordServiceImpl implements HelloWordService {
         return "hello : "+name;
     }
 
+
+
     @Override
     public HelloDTO hello(HelloDTO helloDTO) {
-        if(helloDTO==null){
-            return new HelloDTO();
+        try {
+            HelloDTO helloDTO1 = new HelloDTO();
+            helloDTO1.setName("hello : ");
+            return helloDTO1;
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-        HelloDTO helloDTO1 = new HelloDTO();
-        helloDTO1.setName("hello : "+helloDTO.getName());
-        return helloDTO1;
     }
+    @Override
+    public List<HelloDTO> hellolist(List<HelloDTO> helloDTOs) {
+        try {
+            HelloDTO helloDTO1 = new HelloDTO();
+            helloDTO1.setName("hello : ");
+            List<HelloDTO> l = new ArrayList<HelloDTO>();
+            l.add(helloDTO1);
+            return l;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
