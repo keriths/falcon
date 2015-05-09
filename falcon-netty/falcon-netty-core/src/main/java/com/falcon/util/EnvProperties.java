@@ -1,5 +1,7 @@
 package com.falcon.util;
 
+import com.sun.tools.javac.comp.Env;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,25 +9,25 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * Created by fanshuai on 15/4/21.
+ * Created by fanshuai on 15/5/9.
  */
-public class FalconAssignTools {
-
+public class EnvProperties {
+    private static String envFilePath="/data/env/env.properties";
     private static Properties prop = new Properties();
     static {
         InputStream in  = null;
         try {
-            File file = new File("/data/env/falcon.assign.properties");
+            File file = new File(envFilePath);
             if (file.exists()&&!file.isDirectory()){
-                in = new FileInputStream("/data/env/falcon.assign.properties");
+                in = new FileInputStream(file);
                 if(in!=null) {
                     prop.load(in);
                 }
             }else {
-                System.out.println("not config assign with file :"+file.getAbsolutePath());
+                throw new RuntimeException("not found env properties file :"+file.getAbsolutePath());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException("init env properties error :"+e.getMessage());
         }finally {
             try {
                 if(in!=null){
@@ -36,14 +38,11 @@ public class FalconAssignTools {
             }
         }
     }
-
-    public static String getProperty(String key){
-        return prop.getProperty(key);
+    public static String get(String key){
+        return (String)prop.get(key);
     }
 
     public static void main(String[] args){
-
-
-        System.out.println(FalconAssignTools.class.getResource("/data/webapp/env"));
+        System.out.println(EnvProperties.get("evn"));
     }
 }

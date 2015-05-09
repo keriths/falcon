@@ -1,17 +1,13 @@
 package com.falcon.client;
 
+import com.falcon.util.EnvProperties;
+
 /**
  * Created by fanshuai on 15/3/27.
  */
 public class ZKManager {
-    private static String zkAddress;
+    private static String zkAddress = EnvProperties.get("zk.address");
     public static String getZKAddress(){
-        if(zkAddress==null){
-            zkAddress = System.getProperty("falcon.zk.address");
-            if(zkAddress==null){
-                throw new RuntimeException("please setting \"zk.address\" in vm properties with -D ");
-            }
-        }
         return zkAddress;
     }
 }

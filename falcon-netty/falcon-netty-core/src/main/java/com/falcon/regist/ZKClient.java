@@ -23,7 +23,7 @@ public class ZKClient {
     private String zkAddress = ZKManager.getZKAddress();
     public ZKClient() throws Exception{
         int sessionTimeoutMs = 500;
-        int connectionTimeoutMs = 5000;
+        int connectionTimeoutMs = 15000;
         curatorFramework = CuratorFrameworkFactory.newClient(zkAddress,sessionTimeoutMs,connectionTimeoutMs,new ExponentialBackoffRetry(1000, 3));
         curatorFramework.getConnectionStateListenable().addListener(new MyConnectionStateListener());
         curatorFramework.getCuratorListenable().addListener(new MyListenner());
