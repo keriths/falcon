@@ -39,4 +39,8 @@ public class FalconResponse implements Serializable{
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
     }
+
+    public void setException(Exception e){
+        this.throwable = e;
+    }
 }
