@@ -48,7 +48,7 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     Class[] paramTypes = request.getParameterTypes();
                     ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName,methodName,ServiceMethod.getParamNameString(paramTypes));
                     if(serviceMethod==null){
-                        response.setThrowable(new Exception("method not found"));
+                        response.setErrorMsg(" method not found ");
                     }else{
                         Object o = serviceMethod.invoke(paramters);
                         if(o!=null && !(o instanceof Serializable)){
