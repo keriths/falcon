@@ -3,9 +3,6 @@ package com.falcon.client;
 import com.falcon.config.ProviderZKNodeConfig;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.util.FalconAssignTools;
-import com.google.common.base.Strings;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -71,7 +68,7 @@ public class CustomerManager {
         String assignClient = FalconAssignTools.getProperty(key);
         System.out.println(assignClient);
         try {
-            if(!StringUtils.isEmpty(assignClient)){
+            if(assignClient!=null && assignClient.trim().length()>1){
                 client = allClient.get(assignClient);
                 if(client==null){
                     throw new Exception(assignClient+" client not found ");

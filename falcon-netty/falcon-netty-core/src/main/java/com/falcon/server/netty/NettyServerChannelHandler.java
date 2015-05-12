@@ -1,11 +1,13 @@
 package com.falcon.server.netty;
 
+import com.caucho.hessian.io.Hessian2Output;
 import com.falcon.server.ServiceProviderManager;
 import com.falcon.server.method.ServiceMethod;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
 import org.jboss.netty.channel.*;
 
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -51,22 +53,43 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                         Object o = serviceMethod.invoke(paramters);
                         if(o!=null && !(o instanceof Serializable)){
                             throw new Exception(o.getClass().getName() +" no serializable ");
+                        }else{
+                            response.setRetObject(o);
+//                            FileOutputStream ooo = new FileOutputStream("/data/env/aaa");
+//                            ooo.write(new byte[4]);
+//                            Hessian2Output h2out = new Hessian2Output(ooo);
+//                            try {
+//                                //h2out.writeObject(o);
+//                                response.setRetObject(o);
+//                                //response.setRetObject("1111111111111111111111111111");
+//                                h2out.writeObject(response);
+//                                h2out.flush();
+//                               // response.setRetObject(o);
+//                            }catch (Exception e){
+//                                h2out.init(ooo);
+//                                response.setRetObject(null);
+//                                //h2out.flush();
+//                                h2out.writeObject(response);
+//                                h2out.flush();
+//                                //response.setThrowable(e);
+//                            }finally {
+//                                h2out.close();
+//                            }
                         }
-                        response.setRetObject(o);
                     }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                    response.setThrowable(e);
+                    response.setErrorMsg(e.getMessage());
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                     if(e.getTargetException()!=null){
-                        response.setThrowable(e.getTargetException());
+                        response.setErrorMsg(e.getTargetException().getMessage());
                     }else {
-                        response.setThrowable(e);
+                        response.setErrorMsg(e.getMessage());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    response.setThrowable(e);
+                    response.setErrorMsg(e.getMessage());
                 } finally {
                     channel.write(response);
                 }

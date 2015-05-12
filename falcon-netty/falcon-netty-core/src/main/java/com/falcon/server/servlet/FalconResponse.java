@@ -9,6 +9,7 @@ public class FalconResponse implements Serializable{
     private Throwable throwable;
     private long sequence;
     private Object retObject;
+    private String errorMsg;
 
 
     public long getSequence() {
@@ -31,7 +32,11 @@ public class FalconResponse implements Serializable{
         return throwable;
     }
 
-    public void setThrowable(Throwable throwable) {
-        this.throwable = throwable;
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }

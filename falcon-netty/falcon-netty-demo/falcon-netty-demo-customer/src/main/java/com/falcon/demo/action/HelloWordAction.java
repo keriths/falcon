@@ -24,9 +24,9 @@ public class HelloWordAction {
         HelloDTO d = new HelloDTO();
         List ll = new ArrayList();
         ll.add(d);
-        Object l = helloWordService.hellolist(ll);
+        Object l = helloWordService.hellolist(null);
         System.out.println("******"+l);
-        return helloWordService.sayHello(name);
+        return l.toString();
     }
 
     // /ajax/obj?name=aaa&val=aab

@@ -31,8 +31,7 @@ public class ProviderEncoder extends OneToOneEncoder {
         channelBuffer.setInt(0,msgLength);
         return channelBuffer;
     }
-    public void serializeRequest(OutputStream os, Object obj) throws Exception {
-        System.out.println(obj.getClass().getName());
+    public void serializeRequest(ChannelBufferOutputStream os, Object obj) throws Exception {
         Hessian2Output h2out = new Hessian2Output(os);
         h2out.setSerializerFactory(new SerializerFactory());
         try {
@@ -40,9 +39,9 @@ public class ProviderEncoder extends OneToOneEncoder {
             h2out.flush();
         } catch (Throwable t) {
             if (obj instanceof FalconResponse){
+                h2out.init(os);
                 ((FalconResponse) obj).setRetObject(null);
-                ((FalconResponse) obj).setThrowable(t);
-                h2out.reset();
+                ((FalconResponse) obj).setErrorMsg(t.getMessage());
                 h2out.writeObject(obj);
                 h2out.flush();
                 return ;

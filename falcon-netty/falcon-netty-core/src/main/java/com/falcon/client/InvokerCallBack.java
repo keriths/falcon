@@ -17,6 +17,10 @@ public class InvokerCallBack {
                 this.throwable = response.getThrowable();
                 hasError = true;
             }
+            if(response.getErrorMsg()!=null){
+                this.throwable = new Exception(response.getErrorMsg());
+                hasError = true;
+            }
             hasComplace = true;
             notifyAll();
         }
