@@ -41,4 +41,8 @@ public class CustomerConfig {
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
+
+    public String getCustomerInfo(){
+        return domain+"&"+serviceInterface.getName();
+    }
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
+        </layout>
+    </appender>
+
+
+    <appender name="daily_file" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/data/log/error.log" />
+        <param name="DatePattern" value="'daily.'yyyy-MM-dd'.log'" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss\} %-5p] [%t] (%c:%L) - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="falcon_log" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/data/log/wfalcon.log" />
+        <param name="DatePattern" value="'daily.'yyyy-MM-dd'.log'" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss\} %-5p] [%t] (%c:%L) - %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="sql_log" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/data/log/sql.log" />
+        <param name="DatePattern" value="'daily.'yyyy-MM-dd'.log'" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss\} %-5p] [%t] (%c:%L) - %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="com.falcon" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="falcon_log"/>
+    </logger>
+
+    <logger name="java.sql" additivity="true">
+        <level value="debug"/>
+        <appender-ref ref="sql_log"/>
+    </logger>
+
+    <root>
+        <priority value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="daily_file" />
+    </root>
+
+
+</log4j:configuration>

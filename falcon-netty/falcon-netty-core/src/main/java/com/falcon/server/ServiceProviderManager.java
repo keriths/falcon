@@ -62,4 +62,7 @@ public class ServiceProviderManager {
         String key = getKey(serviceName,methodName,paramNamesStr);
         return serviceMethodCache.get(key);
     }
+    public static ProviderConfig getProvider(String interfaceName){
+        return serviceProviderCache.get(interfaceName);
+    }
 }

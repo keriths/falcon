@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by fanshuai on 15/4/7.
  */
-public class HelloDTO implements Serializable{
+public class HelloDTO{
     private String name;
     private String val;
     private HelloDTO2 h2 = new HelloDTO2();

@@ -1,10 +1,12 @@
 package com.falcon.server.netty;
 
 import com.caucho.hessian.io.Hessian2Output;
+import com.falcon.config.ProviderConfig;
 import com.falcon.server.ServiceProviderManager;
 import com.falcon.server.method.ServiceMethod;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
 
 import java.io.FileOutputStream;
@@ -19,6 +21,7 @@ import java.util.concurrent.Future;
  * Created by fanshuai on 15-1-23.
  */
 public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
+    private static  final Logger log = Logger.getLogger(NettyServerChannelHandler.class);
     ExecutorService threadPool =  Executors.newCachedThreadPool();
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
             throws Exception {
@@ -30,7 +33,8 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
         super.messageReceived(ctx, e);
         List<FalconRequest> requests= (List<FalconRequest>)e.getMessage();
         for (FalconRequest request:requests){
-            doRequest(request,ctx.getChannel());
+            log.info(request.getRequestInfo()+" provider receive ");
+            doRequest(request, ctx.getChannel());
         }
     }
 
@@ -46,49 +50,46 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     String methodName = request.getServiceMethod();
                     Object[] paramters = request.getParameters();
                     Class[] paramTypes = request.getParameterTypes();
-                    ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName,methodName,ServiceMethod.getParamNameString(paramTypes));
-                    if(serviceMethod==null){
-                        response.setErrorMsg(" method not found ");
-                    }else{
-                        Object o = serviceMethod.invoke(paramters);
-                        if(o!=null && !(o instanceof Serializable)){
-                            throw new Exception(o.getClass().getName() +" no serializable ");
-                        }else{
-                            response.setRetObject(o);
-//                            FileOutputStream ooo = new FileOutputStream("/data/env/aaa");
-//                            ooo.write(new byte[4]);
-//                            Hessian2Output h2out = new Hessian2Output(ooo);
-//                            try {
-//                                //h2out.writeObject(o);
-//                                response.setRetObject(o);
-//                                //response.setRetObject("1111111111111111111111111111");
-//                                h2out.writeObject(response);
-//                                h2out.flush();
-//                               // response.setRetObject(o);
-//                            }catch (Exception e){
-//                                h2out.init(ooo);
-//                                response.setRetObject(null);
-//                                //h2out.flush();
-//                                h2out.writeObject(response);
-//                                h2out.flush();
-//                                //response.setThrowable(e);
-//                            }finally {
-//                                h2out.close();
-//                            }
+                    if(methodName.equals("toString")){
+                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
+                        if (provider==null){
+                            throw new Exception(" provider service("+serviceName+") not found ");
+                        }
+                        response.setRetObject(provider.getService().toString());
+                    }else if(methodName.equals("hashCode")){
+                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
+                        if (provider==null){
+                            throw new Exception(" provider service("+serviceName+") not found ");
+                        }
+                        response.setRetObject(provider.getService().hashCode());
+                    }
+                    else {
+                        ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName, methodName, ServiceMethod.getParamNameString(paramTypes));
+                        if (serviceMethod == null) {
+                            response.setErrorMsg(" method not found ");
+                        } else {
+                            Object o = serviceMethod.invoke(paramters);
+                            log.info(request.getRequestInfo()+" has complete ");
+                            if (o != null && !(o instanceof Serializable)) {
+                                throw new Exception(o.getClass().getName() + " no serializable ");
+                            } else {
+                                response.setRetObject(o);
+                            }
                         }
                     }
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    log.error(request.getRequestInfo() + " IllegalAccessException exception :", e);
                     response.setErrorMsg(e.getMessage());
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
                     if(e.getTargetException()!=null){
+                        log.error(request.getRequestInfo()+" InvocationTargetException exception :",e.getTargetException());
                         response.setErrorMsg(e.getTargetException().getMessage());
                     }else {
+                        log.error(request.getRequestInfo()+" exception :",e);
                         response.setErrorMsg(e.getMessage());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(request.getRequestInfo()+" exception :",e);
                     response.setErrorMsg(e.getMessage());
                 } finally {
                     channel.write(response);

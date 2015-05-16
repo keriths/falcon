@@ -3,13 +3,16 @@ package com.falcon.client;
 import com.falcon.config.ProviderZKNodeConfig;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.util.FalconAssignTools;
+import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by fanshuai on 15-2-11.
  */
 public class CustomerManager {
+    private static final Logger log = Logger.getLogger(CustomerManager.class);
     private static List<CustomerConfig> customerConfigList = new ArrayList<CustomerConfig>();
     private static Map<String,FalconCustomerClient> allClient = new HashMap<String,FalconCustomerClient>();
     private static Map<String,List<FalconCustomerClient>> serviceClientsMap = new HashMap<String, List<FalconCustomerClient>>();
@@ -44,9 +47,11 @@ public class CustomerManager {
             serviceClientList.add(client);
         }
     }
-    public static Map<Long,InvokerContext> requestIng = new HashMap<Long, InvokerContext>();
+    public static Map<Long,InvokerContext> requestIng = new ConcurrentHashMap<Long, InvokerContext>();
     public static Object invoke(final FalconRequest request, final CustomerConfig customerConfig) throws Exception {
         final InvokerCallBack callBack = new InvokerCallBack();
+        callBack.setRequest(request);
+        log.info(request.getRequestInfo() + " begin invoke : ");
         new Thread(){
             @Override
             public void run() {
@@ -56,6 +61,7 @@ public class CustomerManager {
                     requestIng.put(request.getSequence(),invokerContext);
                     client.doRequest(request, invokerContext);
                 }catch (Exception e){
+                    log.error(request.getRequestInfo()+" invoke exception : ",e);
                     callBack.processFailedResponse(e);
                 }
             }
@@ -75,7 +81,8 @@ public class CustomerManager {
                 }
             }else{
                 List<FalconCustomerClient> clients = serviceClientsMap.get(key);
-                client = selectClient(clients);
+                List<FalconCustomerClient> selectAllClient = new ArrayList<FalconCustomerClient>(clients);
+                client = selectClient(customerConfig,selectAllClient);
             }
             return client;
         }catch (Exception e){
@@ -83,20 +90,27 @@ public class CustomerManager {
         }
     }
 
-    private static FalconCustomerClient selectClient(List<FalconCustomerClient> clients) throws Exception {
+    private static FalconCustomerClient selectClient(CustomerConfig customerConfig,List<FalconCustomerClient> clients) throws Exception {
         if(clients==null || clients.isEmpty()){
             throw new Exception("service provider not fund client");
         }
         int index = randomIndex(clients.size());
         FalconCustomerClient c = clients.get(index);
-        if (c.isConnected()){
-            return c;
+        if (!c.isConnected()){
+            c.connect();
         }
-        c.connect();
+        while (!c.isConnected()){
+            clients.remove(c);
+            if(clients.isEmpty()){
+                break;
+            }
+            c = selectClient(customerConfig,clients);
+        }
         if(c.isConnected()){
             return c;
+        }else {
+            throw new Exception(" no available provier exists for service ["+customerConfig.getCustomerInfo()+"]");
         }
-        throw new Exception("service provider["+c.getHost()+":"+c.getPort()+"] client is dead");
     }
     private static int randomIndex(int size){
         if(size<=1){
