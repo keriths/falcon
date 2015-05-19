@@ -81,8 +81,10 @@ public class CustomerManager {
                 }
             }else{
                 List<FalconCustomerClient> clients = serviceClientsMap.get(key);
+                log.info(customerConfig.getCustomerInfo()+" allClients:"+clients);
                 List<FalconCustomerClient> selectAllClient = new ArrayList<FalconCustomerClient>(clients);
                 client = selectClient(customerConfig,selectAllClient);
+                log.info(customerConfig.getCustomerInfo()+" selectedClient:"+client);
             }
             return client;
         }catch (Exception e){
