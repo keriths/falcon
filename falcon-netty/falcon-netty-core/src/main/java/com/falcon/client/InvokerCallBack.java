@@ -37,21 +37,21 @@ public class InvokerCallBack {
             while (!hasComplace){
                 try {
                     if(lastTime<=0){
-                        log.error(request.getRequestInfo() +" time out ("+(timeOut)+")" +" use time ("+(System.currentTimeMillis()-startTime)+")");
-                        throw new Exception(request.getRequestInfo() +" time out ("+(timeOut)+")" +" use time ("+(System.currentTimeMillis()-startTime)+")");
+                        log.error(request +" time out ("+(timeOut)+")" +" use time ("+(System.currentTimeMillis()-startTime)+")");
+                        throw new Exception(request +" time out ("+(timeOut)+")" +" use time ("+(System.currentTimeMillis()-startTime)+")");
                     }
                     wait(timeOut);
                     lastTime -= timeOut;
                 } catch (InterruptedException e) {
-                    log.error(request.getRequestInfo() +" thread wait exception : ",e);
+                    log.error(request +" thread wait exception : ",e);
                 }
             }
             if (hasError){
-                log.error(request.getRequestInfo() +" has error ",throwable);
-                throw new Exception(request.getRequestInfo(),throwable);
+                log.error(request +" has error ",throwable);
+                throw new Exception(request+"",throwable);
             }
         }
-        log.error(request.getRequestInfo() +" success with time ("+(System.currentTimeMillis()-startTime)+")");
+        log.error(request +" success with time ("+(System.currentTimeMillis()-startTime)+")");
         return returnObject;
 
     }

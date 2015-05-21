@@ -3,6 +3,7 @@ package com.falcon.server.netty;
 import com.falcon.client.CustomerManager;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconResponse;
+import org.apache.log4j.Logger;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
@@ -14,8 +15,10 @@ import java.util.List;
  * Created by fanshuai on 15-1-24.
  */
 public class NettyClientChannelHandler extends SimpleChannelUpstreamHandler {
+    private final static Logger log = Logger.getLogger(NettyClientChannelHandler.class);
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
         List<FalconResponse> responses =(List<FalconResponse>) e.getMessage();
+        log.info(responses+" clientHandel received ");
         if(responses==null || responses.isEmpty()){
             return ;
         }
@@ -28,8 +31,6 @@ public class NettyClientChannelHandler extends SimpleChannelUpstreamHandler {
     }
 
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-        e.getCause().printStackTrace();
-        System.out.println("------Unexpected exception from downstream."
-                + e.getCause());
+        log.error("****&&&",e.getCause());
     }
 }

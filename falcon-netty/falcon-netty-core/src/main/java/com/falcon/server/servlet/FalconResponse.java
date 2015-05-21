@@ -1,5 +1,7 @@
 package com.falcon.server.servlet;
 
+import com.falcon.util.DateUtils;
+
 import java.io.Serializable;
 
 /**
@@ -10,13 +12,15 @@ public class FalconResponse implements Serializable{
     private long sequence;
     private Object retObject;
     private String errorMsg;
-
+    private long invokeStartTime = 0;
+    private long invokeEndTime = 0;
 
     public long getSequence() {
         return sequence;
     }
 
     public void setSequence(long sequence) {
+        invokeStartTime = DateUtils.getCurTimeStamp();
         this.sequence = sequence;
     }
 
@@ -25,6 +29,7 @@ public class FalconResponse implements Serializable{
     }
 
     public void setRetObject(Object retObject) {
+        invokeEndTime = DateUtils.getCurTimeStamp();
         this.retObject = retObject;
     }
 
@@ -37,7 +42,12 @@ public class FalconResponse implements Serializable{
     }
 
     public void setErrorMsg(String errorMsg) {
+        invokeEndTime = DateUtils.getCurTimeStamp();
         this.errorMsg = errorMsg;
     }
 
+    @Override
+    public String toString() {
+        return "seq:"+getSequence()+" errorMsg:"+errorMsg+" invokeStartTime:"+invokeStartTime+" invokeEndTime:"+invokeEndTime+" useTime:"+(invokeEndTime-invokeStartTime);
+    }
 }

@@ -62,7 +62,9 @@ public class FalconRequest implements Serializable{
         this.domain = domain;
     }
 
-    public String getRequestInfo(){
-        return "seq:" + getSequence()+ " domain:" +getDomain() +" service:"+getServiceInterfaceName() +" method"+getServiceMethod();
+
+    @Override
+    public String toString() {
+        return "seq:"+getSequence()+" method:"+getServiceMethod()+" service:"+getServiceInterfaceName();
     }
 }

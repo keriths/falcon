@@ -6,6 +6,7 @@ import com.falcon.client.CustomerManager;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
+import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -20,6 +21,7 @@ import java.io.OutputStream;
  * Created by fanshuai on 15-2-9.
  */
 public class ProviderEncoder extends OneToOneEncoder {
+    private final static Logger log = Logger.getLogger(ProviderEncoder.class);
     private  final byte[] LENGTH_PLACEHOLDER = new byte[4];
     @Override
     protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
@@ -35,15 +37,19 @@ public class ProviderEncoder extends OneToOneEncoder {
         Hessian2Output h2out = new Hessian2Output(os);
         h2out.setSerializerFactory(new SerializerFactory());
         try {
+            log.info(obj+" hessian write object");
             h2out.writeObject(obj);
             h2out.flush();
+            log.info(obj+" hessian write object over ");
         } catch (Throwable t) {
             if (obj instanceof FalconResponse){
+                log.info(obj+" hessian write object error rewrite ");
                 h2out.init(os);
                 ((FalconResponse) obj).setRetObject(null);
                 ((FalconResponse) obj).setErrorMsg(t.getMessage());
                 h2out.writeObject(obj);
                 h2out.flush();
+                log.info(obj+" hessian write object error rewrite over ");
                 return ;
             }
             if(obj instanceof FalconRequest){

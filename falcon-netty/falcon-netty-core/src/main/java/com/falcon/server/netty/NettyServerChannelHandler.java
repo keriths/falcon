@@ -25,6 +25,7 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
     ExecutorService threadPool =  Executors.newCachedThreadPool();
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
             throws Exception {
+        //log.error("***&&&***",e.get);
         //e.getChannel().write("Hello, World");
     }
 
@@ -32,8 +33,8 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         super.messageReceived(ctx, e);
         List<FalconRequest> requests= (List<FalconRequest>)e.getMessage();
+        log.info(requests+" serverHandel receive ");
         for (FalconRequest request:requests){
-            log.info(request.getRequestInfo()+" provider receive ");
             doRequest(request, ctx.getChannel());
         }
     }
@@ -69,29 +70,31 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                             response.setErrorMsg(" method not found ");
                         } else {
                             Object o = serviceMethod.invoke(paramters);
-                            log.info(request.getRequestInfo()+" has complete ");
+                            log.info(request+" has success complete ");
                             if (o != null && !(o instanceof Serializable)) {
                                 throw new Exception(o.getClass().getName() + " no serializable ");
                             } else {
                                 response.setRetObject(o);
+                                log.info(response+" has success complete ");
                             }
                         }
                     }
                 } catch (IllegalAccessException e) {
-                    log.error(request.getRequestInfo() + " IllegalAccessException exception :", e);
-                    response.setErrorMsg(e.getMessage());
+                    log.error(request + " IllegalAccessException exception :", e);
+                    response.setErrorMsg("InvocationTargetException:"+e.getMessage());
                 } catch (InvocationTargetException e) {
                     if(e.getTargetException()!=null){
-                        log.error(request.getRequestInfo()+" InvocationTargetException exception :",e.getTargetException());
-                        response.setErrorMsg(e.getTargetException().getMessage());
+                        log.error(request+" InvocationTargetException exception :",e.getTargetException());
+                        response.setErrorMsg("InvocationTargetException:"+e.getTargetException().getMessage());
                     }else {
-                        log.error(request.getRequestInfo()+" exception :",e);
-                        response.setErrorMsg(e.getMessage());
+                        log.error(request+" InvocationTargetException :",e);
+                        response.setErrorMsg("InvocationTargetException:"+e.getMessage());
                     }
                 } catch (Exception e) {
-                    log.error(request.getRequestInfo()+" exception :",e);
-                    response.setErrorMsg(e.getMessage());
+                    log.error(request+" exception :",e);
+                    response.setErrorMsg("Exception:"+e.getMessage());
                 } finally {
+                    log.info("return response "+response);
                     channel.write(response);
                 }
             }
@@ -101,6 +104,6 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
 
 
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
-
+        log.error("***&&&***",e.getCause());
     }
 }

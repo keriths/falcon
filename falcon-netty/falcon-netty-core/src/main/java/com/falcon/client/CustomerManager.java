@@ -51,7 +51,7 @@ public class CustomerManager {
     public static Object invoke(final FalconRequest request, final CustomerConfig customerConfig) throws Exception {
         final InvokerCallBack callBack = new InvokerCallBack();
         callBack.setRequest(request);
-        log.info(request.getRequestInfo() + " begin invoke : ");
+        log.info(request + " begin invoke : ");
         new Thread(){
             @Override
             public void run() {
@@ -61,7 +61,7 @@ public class CustomerManager {
                     requestIng.put(request.getSequence(),invokerContext);
                     client.doRequest(request, invokerContext);
                 }catch (Exception e){
-                    log.error(request.getRequestInfo()+" invoke exception : ",e);
+                    log.error(request+" invoke exception : ",e);
                     callBack.processFailedResponse(e);
                 }
             }

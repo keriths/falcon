@@ -4,6 +4,7 @@ import com.falcon.client.CustomerManager;
 import com.falcon.client.InvokerCallBack;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconRequest;
+import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  * Created by fanshuai on 15-2-10.
  */
 public class NettyClient  {
+    private final static Logger log = Logger.getLogger(NettyClient.class);
     private ClientBootstrap bootstrap;
     private String ip ;
     private int port ;
@@ -75,9 +77,9 @@ public class NettyClient  {
     }
 
     public void write(final FalconRequest request){
+        log.info(request+" channel write ");
         ChannelFuture future  = channel.write(request);
         future.addListener(new ChannelFutureListener(){
-
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if(!future.isSuccess()){
