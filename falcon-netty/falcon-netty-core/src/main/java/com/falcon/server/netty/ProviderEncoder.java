@@ -25,14 +25,31 @@ public class ProviderEncoder extends OneToOneEncoder {
     private  final byte[] LENGTH_PLACEHOLDER = new byte[4];
     @Override
     protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
-        ChannelBufferOutputStream bout = new ChannelBufferOutputStream(ChannelBuffers.dynamicBuffer(512, ctx.getChannel().getConfig().getBufferFactory()));
-        bout.write(LENGTH_PLACEHOLDER);
-        serializeRequest(bout,msg);
-        ChannelBuffer channelBuffer = bout.buffer();
-        int msgLength = channelBuffer.writerIndex()-LENGTH_PLACEHOLDER.length;
-        channelBuffer.setInt(0,msgLength);
-        return channelBuffer;
+
+        ChannelBuffer channelBuffer=null;
+        try {
+            ChannelBufferOutputStream bout = new ChannelBufferOutputStream(ChannelBuffers.dynamicBuffer(512, ctx.getChannel().getConfig().getBufferFactory()));
+            bout.write(LENGTH_PLACEHOLDER);
+            serializeRequest(bout,msg);
+            channelBuffer = bout.buffer();
+            int msgLength = channelBuffer.writerIndex()-LENGTH_PLACEHOLDER.length;
+            channelBuffer.setInt(0,msgLength);
+            log.error(msg+" encode object success ");
+            return channelBuffer;
+        } catch (Exception e) {
+            log.error(msg+" encode object exception ",e);
+            if(msg instanceof FalconRequest){
+                long seq = ((FalconRequest) msg).getSequence();
+                InvokerContext invokerContext = CustomerManager.requestIng.get(seq);
+                if (invokerContext!=null){
+                    invokerContext.getCallBack().processFailedResponse(e);
+                    CustomerManager.requestIng.remove(seq);
+                }
+            }
+            throw new Exception(e);
+        }
     }
+
     public void serializeRequest(ChannelBufferOutputStream os, Object obj) throws Exception {
         Hessian2Output h2out = new Hessian2Output(os);
         h2out.setSerializerFactory(new SerializerFactory());
