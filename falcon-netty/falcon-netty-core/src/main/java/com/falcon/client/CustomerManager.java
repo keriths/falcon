@@ -15,7 +15,7 @@ public class CustomerManager {
     private static final Logger log = Logger.getLogger(CustomerManager.class);
     private static List<CustomerConfig> customerConfigList = new ArrayList<CustomerConfig>();
     private static Map<String,FalconCustomerClient> allClient = new HashMap<String,FalconCustomerClient>();
-    private static Map<String,List<FalconCustomerClient>> serviceClientsMap = new HashMap<String, List<FalconCustomerClient>>();
+    private static Map<String,List<FalconCustomerClient>> serviceClientsMap = new ConcurrentHashMap<String, List<FalconCustomerClient>>();
 
 
     private static String getServiceClientsMapKey(String domain,String interfaceName){
@@ -26,15 +26,19 @@ public class CustomerManager {
     }
     public static void addCustomer(CustomerConfig customerConfig) throws Exception {
         customerConfigList.add(customerConfig);
-        List<ProviderZKNodeConfig> providerZKNodeConfigList = InvokerZKClientFactory.getClient().getProviders(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());
+        initCustomerAllClient(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());
+    }
+
+    public static void initCustomerAllClient(String domain,String serviceInterfaceName) throws Exception{
+        List<ProviderZKNodeConfig> providerZKNodeConfigList = InvokerZKClientFactory.getClient().getProviders(domain,serviceInterfaceName);
         if(providerZKNodeConfigList==null || providerZKNodeConfigList.isEmpty()){
-            throw new Exception(customerConfig.getDomain()+" "+customerConfig.getServiceInterface()+" not found provider");
+            throw new Exception(domain+" "+serviceInterfaceName+" not found provider");
         }
 
-        String erviceClientsMapKey=getServiceClientsMapKey(customerConfig.getDomain(),customerConfig.getServiceInterface().getName());
-        List<FalconCustomerClient> serviceClientList = serviceClientsMap.get(customerConfig.getDomain()+"_"+customerConfig.getServiceInterface().getName());
+        String erviceClientsMapKey=getServiceClientsMapKey(domain,serviceInterfaceName);
+        List<FalconCustomerClient> serviceClientList = serviceClientsMap.get(erviceClientsMapKey);
         if(serviceClientList==null){
-            serviceClientList = new ArrayList<FalconCustomerClient>();
+            serviceClientList = Collections.synchronizedList(new ArrayList<FalconCustomerClient>());
             serviceClientsMap.put(erviceClientsMapKey,serviceClientList);
         }
         for (ProviderZKNodeConfig providerZKNodeConfig:providerZKNodeConfigList){
@@ -44,8 +48,24 @@ public class CustomerManager {
                 client=new FalconCustomerClient(providerZKNodeConfig.getHost(),providerZKNodeConfig.getPort());
                 allClient.put(allClientKey,client);
             }
-            serviceClientList.add(client);
+            if(!serviceClientList.contains(client)){
+                serviceClientList.add(client);
+            }
         }
+    }
+    public static void removeCustomerClient(String domain,String serviceInterfaceName,String host,int port) throws Exception{
+        String serviceClientsMapKey=getServiceClientsMapKey(domain,serviceInterfaceName);
+        List<FalconCustomerClient> serviceClientList = serviceClientsMap.get(serviceClientsMapKey);
+        if(serviceClientList==null){
+            return ;
+        }
+        String allClientKey = getAllClientKey(host,port);
+        FalconCustomerClient client = allClient.get(allClientKey);
+        if(client==null){
+            return;
+        }
+        allClient.remove(allClientKey);
+        serviceClientList.remove(client);
     }
     public static Map<Long,InvokerContext> requestIng = new ConcurrentHashMap<Long, InvokerContext>();
     public static Object invoke(final FalconRequest request, final CustomerConfig customerConfig) throws Exception {
@@ -68,6 +88,7 @@ public class CustomerManager {
         }.start();
         return callBack.get(customerConfig.getTimeout());
     }
+
     private static FalconCustomerClient getClient(CustomerConfig customerConfig) throws Exception {
         String key = getServiceClientsMapKey(customerConfig.getDomain(), customerConfig.getServiceInterface().getName());
         FalconCustomerClient client;
