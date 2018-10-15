@@ -12,8 +12,9 @@ import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.log4j.Logger;
 import org.apache.zookeeper.Watcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by fanshuai on 15-2-11.
  */
 public class InvokerZKClient {
-    private final static Logger log = Logger.getLogger(InvokerZKClient.class);
+    private final static Logger log = LoggerFactory.getLogger(InvokerZKClient.class);
     private CuratorFramework curatorFramework ;
     private String zkAddress = ZKManager.getZKAddress();
     public InvokerZKClient() throws Exception{

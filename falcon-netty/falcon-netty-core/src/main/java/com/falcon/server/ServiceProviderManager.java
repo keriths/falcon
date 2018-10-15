@@ -12,9 +12,9 @@ import java.util.*;
  * Created by fanshuai on 15-2-7.
  */
 public class ServiceProviderManager {
-    private static Map<String,ProviderConfig> serviceProviderCache = new HashMap<String, ProviderConfig>();
-    private static Map<String,ServiceMethod> serviceMethodCache = new HashMap<String, ServiceMethod>();
-    private static Set<String> ignoreMethods = new HashSet<String>();
+    public static Map<String,ProviderConfig> serviceProviderCache = new HashMap<String, ProviderConfig>();
+    public static Map<String,ServiceMethod> serviceMethodCache = new HashMap<String, ServiceMethod>();
+    public static Set<String> ignoreMethods = new HashSet<String>();
     static {
         Method[] objectMethodArray = Object.class.getMethods();
         for (Method method : objectMethodArray) {

@@ -1,4 +1,4 @@
-package aaaa;
+package com.falcon.api.doc;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -10,13 +10,21 @@ import java.util.Map;
  */
 public class ApiMethodDesc {
     /**
+     * 服务id
+     */
+    private String apiCodeId;
+    /**
      * 接口方法的唯一ID,如未指定使用serviceName+"#"+methodName+"#"+paramNames
      */
-    private String methodId;
+    private String methodCodeId;
+    /**
+     * 服务类简单名称
+     */
+    private String serviceTypeFullName;
     /**
      * 服务类路径
      */
-    private String serviceName;
+    private String serviceTypeSingleName;
     /**
      * 服务描述
      */
@@ -45,10 +53,6 @@ public class ApiMethodDesc {
      * 此方法中用到的类名称和类结构映射关系map
      */
     private Map<String,TypeDesc> typeFieldDetailLinkedHashMap = new HashMap<String, TypeDesc>();
-
-
-
-
 
     /**
      * 服务实现的实例，服务实时调用时使用的
@@ -102,16 +106,16 @@ public class ApiMethodDesc {
         this.serviceObj = serviceObj;
     }
 
-    public String getMethodId() {
-        if (methodId==null){
-            methodId=serviceName+"#"+methodName+"#"+paramNames.replaceAll(" ","");
+    public String getMethodCodeId() {
+        if (methodCodeId ==null){
+            methodCodeId = apiCodeId +"#"+methodName+"#"+paramNames.replaceAll(" ","");
         }
-        return methodId;
-//        return methodId;
+        return methodCodeId;
+//        return methodCodeId;
     }
 
-    public void setMethodId(String methodId) {
-        this.methodId = methodId;
+    public void setMethodCodeId(String methodCodeId) {
+        this.methodCodeId = methodCodeId;
     }
 
     public Method getMethod() {
@@ -122,12 +126,12 @@ public class ApiMethodDesc {
         this.method = method;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getServiceTypeSingleName() {
+        return serviceTypeSingleName;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setServiceTypeSingleName(String serviceTypeSingleName) {
+        this.serviceTypeSingleName = serviceTypeSingleName;
     }
 
     public String getMethodName() {
@@ -178,4 +182,19 @@ public class ApiMethodDesc {
         this.returnType = returnType;
     }
 
+    public String getApiCodeId() {
+        return apiCodeId;
+    }
+
+    public void setApiCodeId(String apiCodeId) {
+        this.apiCodeId = apiCodeId;
+    }
+
+    public String getServiceTypeFullName() {
+        return serviceTypeFullName;
+    }
+
+    public void setServiceTypeFullName(String serviceTypeFullName) {
+        this.serviceTypeFullName = serviceTypeFullName;
+    }
 }

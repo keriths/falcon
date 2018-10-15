@@ -30,14 +30,14 @@ public class ServiceMethod {
 
     public static String getParamNameString(Class[] paramterTypes){
         if(paramterTypes==null || paramterTypes.length==0){
-            return "@";
+            return "";
         }
         Class[] types = regulateTypes(paramterTypes);
         StringBuilder sb = new StringBuilder();
         for (Class c : types) {
-            sb.append(c.getSimpleName()).append("@");
+            sb.append(c.getName()).append(",");
         }
-        return sb.toString();
+        return sb.toString().substring(0,sb.toString().length()-1);
     }
 
     public static  Class<?>[] regulateTypes(Class<?>[] types) {

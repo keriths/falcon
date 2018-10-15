@@ -6,13 +6,14 @@ import com.falcon.client.CustomerManager;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
-import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferOutputStream;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,7 +22,7 @@ import java.io.OutputStream;
  * Created by fanshuai on 15-2-9.
  */
 public class ProviderEncoder extends OneToOneEncoder {
-    private final static Logger log = Logger.getLogger(ProviderEncoder.class);
+    private final static Logger log = LoggerFactory.getLogger(ProviderEncoder.class);
     private  final byte[] LENGTH_PLACEHOLDER = new byte[4];
     @Override
     protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {

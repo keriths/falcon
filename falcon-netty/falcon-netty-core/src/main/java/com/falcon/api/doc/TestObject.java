@@ -1,4 +1,4 @@
-package aaaa;
+package com.falcon.api.doc;
 
 import java.math.BigDecimal;
 import java.util.Date;

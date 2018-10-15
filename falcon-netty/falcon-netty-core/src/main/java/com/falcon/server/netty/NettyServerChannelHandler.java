@@ -6,8 +6,9 @@ import com.falcon.server.ServiceProviderManager;
 import com.falcon.server.method.ServiceMethod;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
-import org.apache.log4j.Logger;
 import org.jboss.netty.channel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileOutputStream;
 import java.io.Serializable;
@@ -21,7 +22,7 @@ import java.util.concurrent.Future;
  * Created by fanshuai on 15-1-23.
  */
 public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
-    private static  final Logger log = Logger.getLogger(NettyServerChannelHandler.class);
+    private static  final Logger log = LoggerFactory.getLogger(NettyServerChannelHandler.class);
     ExecutorService threadPool =  Executors.newCachedThreadPool();
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
             throws Exception {

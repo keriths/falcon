@@ -1,4 +1,4 @@
-package aaaa;
+package com.falcon.api.doc;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
@@ -19,9 +19,9 @@ public class ApiDescManager {
     private static Map<String,ApiDesc> allApiDesc = new HashMap<String, ApiDesc>();
 
     public static void addApiDesc(ApiDesc apiDesc){
-        allApiDesc.put(apiDesc.getApiId(),apiDesc);
+        allApiDesc.put(apiDesc.getApiCodeId(),apiDesc);
         for (ApiMethodDesc apiMethodDesc:apiDesc.getApiMethodDescList()){
-            allApiMethodDesc.put(apiMethodDesc.getMethodId(),apiMethodDesc);
+            allApiMethodDesc.put(apiMethodDesc.getMethodCodeId(),apiMethodDesc);
         }
     }
 
@@ -32,7 +32,11 @@ public class ApiDescManager {
     public static void main(String[] args){
         ApiDesc apiDesc = new ApiDescManager().parseServiceObject(new TestObject(),"");
         addApiDesc(apiDesc);
-        System.out.println(JSON.toJSONString(apiDesc));
+//        System.out.println(JSON.toJSONString(apiDesc));
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(JSON.toJSONString(allApiMethodDesc));
     }
     public static List<String> objectPublicMethodNameList(){
         Method[] methods = Object.class.getMethods();
@@ -42,7 +46,7 @@ public class ApiDescManager {
         }
         return methodNames;
     }
-    public ApiDesc parseServiceObject(Object bean,String serviceId){
+    public static ApiDesc parseServiceObject(Object bean,String serviceId){
         Object serviceObj = bean;
         ApiDesc apiDesc = getApiDesc(bean, serviceId);
         Class serviceClass = serviceObj.getClass();
@@ -59,10 +63,12 @@ public class ApiDescManager {
         return apiDesc;
     }
 
-    private ApiMethodDesc getApiMethodDesc(ApiDesc apiDesc, Object serviceObj, Method method) {
+    private static ApiMethodDesc getApiMethodDesc(ApiDesc apiDesc, Object serviceObj, Method method) {
         ApiMethodDesc apiMethodDesc = new ApiMethodDesc();
-        apiMethodDesc.setMethodId("");
-        apiMethodDesc.setServiceName(serviceObj.getClass().getName());
+//        apiMethodDesc.setMethodCodeId("");
+        apiMethodDesc.setApiCodeId(apiDesc.getApiCodeId());
+        apiMethodDesc.setServiceTypeFullName(apiDesc.getServiceTypeFullName());
+        apiMethodDesc.setServiceTypeSingleName(serviceObj.getClass().getName());
         apiMethodDesc.setServiceDesc(apiDesc.getServiceDesc());
         apiMethodDesc.setMethodName(method.getName());
         apiMethodDesc.setMethodDesc(getApiDocDesc(method.getAnnotation(ApiDoc.class)));
@@ -76,7 +82,7 @@ public class ApiDescManager {
         return apiMethodDesc;
     }
 
-    private Map<String, TypeDesc> getTypeFieldDetailLinkedHashMap(Method method) {
+    private static Map<String, TypeDesc> getTypeFieldDetailLinkedHashMap(Method method) {
         Map<String,TypeDesc> typeFieldDetailLinkedHashMap = new HashMap<String, TypeDesc>();
         for (Type type :method.getGenericParameterTypes()){
             getApiMethodResultType(type,typeFieldDetailLinkedHashMap);
@@ -84,7 +90,7 @@ public class ApiDescManager {
         return typeFieldDetailLinkedHashMap;
     }
 
-    private TypeDesc getApiMethodResultType(Type genericReturnType,Map<String,TypeDesc> typeFieldDetailLinkedHashMap) {
+    private static TypeDesc getApiMethodResultType(Type genericReturnType,Map<String,TypeDesc> typeFieldDetailLinkedHashMap) {
         TypeDesc apiMethodResultType = new TypeDesc();
         apiMethodResultType.setTypeFullName(getTypeSimpleName(genericReturnType));
         apiMethodResultType.setTypeSingleName(getTypeFullName(genericReturnType));
@@ -96,7 +102,7 @@ public class ApiDescManager {
         return apiMethodResultType;
     }
 
-    private void typeDetail(Type type,Map<String,TypeDesc> typeFieldDetailLinkedHashMap){
+    private static void typeDetail(Type type,Map<String,TypeDesc> typeFieldDetailLinkedHashMap){
         String typeFullName=getTypeFullName(type);
         String typeSingleName=getTypeSimpleName(type);
         if (typeFieldDetailLinkedHashMap.containsKey(typeFullName)){
@@ -115,17 +121,11 @@ public class ApiDescManager {
         typeDetail.setFieldDescList(fieldDescList);
         for (Field field:fields){
             FieldDesc fieldDesc = new FieldDesc();
-
             Type genericType = field.getGenericType();
-
-            ApiDoc apiResultFieldDesc=field.getAnnotation(ApiDoc.class);
-            String desc = "";
-            if (apiResultFieldDesc!=null){
-                desc=apiResultFieldDesc.desc();
-            }
+            ApiDoc apiFieldDescDoc=field.getAnnotation(ApiDoc.class);
             String filedName = field.getName();
             String fieldTypeName = getTypeName(genericType,typeFieldDetailLinkedHashMap);
-            fieldDesc.setFieldDesc(desc);
+            fieldDesc.setFieldDesc(getApiDocDesc(apiFieldDescDoc));
             fieldDesc.setFieldTypeFullName(getTypeFullName(genericType));
             fieldDesc.setFieldTypeSingleName(fieldTypeName);
             fieldDesc.setFieldName(filedName);
@@ -133,13 +133,13 @@ public class ApiDescManager {
         }
     }
 
-    private String getTypeName(Type type,Map<String,TypeDesc> typeFieldDetailLinkedHashMap){
+    private static String getTypeName(Type type,Map<String,TypeDesc> typeFieldDetailLinkedHashMap){
         if (isOwnerType(type) ){
             typeDetail(type,typeFieldDetailLinkedHashMap);
         }
         StringBuilder stringBuilder = new StringBuilder();
         if (type instanceof ParameterizedType){
-            String fieldTypeName = getTypeSimpleName(type);
+            String fieldTypeName = getTypeFullName(type);
             stringBuilder.append(fieldTypeName);
             Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
             if (actualTypeArguments==null||actualTypeArguments.length==0){
@@ -165,7 +165,7 @@ public class ApiDescManager {
 
     }
 
-    private List<Field> getAllFields(Type type) {
+    private static List<Field> getAllFields(Type type) {
         List<Field> fieldList = new ArrayList<Field>();
         Field[] declaredFields = ((Class) type).getDeclaredFields();
         if (declaredFields!=null){
@@ -186,14 +186,14 @@ public class ApiDescManager {
 
     }
 
-    private boolean isOwnerType(Type type){
+    private static boolean isOwnerType(Type type){
         if (getTypeFullName(type).startsWith("java.")){
             return false;
         }
         return true;
     }
 
-    private String getTypeFullName(Type type){
+    private static String getTypeFullName(Type type){
         if (type instanceof Class){
             return ((Class) type).getName();
         }else if (type instanceof ParameterizedTypeImpl){
@@ -201,7 +201,7 @@ public class ApiDescManager {
         }
         throw new RuntimeException(" not found type ");
     }
-    private String getTypeSimpleName(Type type){
+    private static String getTypeSimpleName(Type type){
         if (type instanceof Class){
             return ((Class) type).getSimpleName();
         }else if (type instanceof ParameterizedTypeImpl){
@@ -210,7 +210,7 @@ public class ApiDescManager {
         throw new RuntimeException(" not found type "+type);
     }
 
-    private LinkedHashMap<String, String> getParamNameParamTypeNameMap(Method method) {
+    private static LinkedHashMap<String, String> getParamNameParamTypeNameMap(Method method) {
         LinkedHashMap<String, String> paramNameParamTypeNameMap = new LinkedHashMap<String, String>();
         LocalVariableTableParameterNameDiscoverer u = new LocalVariableTableParameterNameDiscoverer();
         String[] paramNames = u.getParameterNames(method);
@@ -222,11 +222,11 @@ public class ApiDescManager {
         return paramNameParamTypeNameMap;
     }
 
-    private ApiDesc getApiDesc(Object bean, String serviceId) {
+    private static ApiDesc getApiDesc(Object bean, String serviceId) {
         Class serviceClass=bean.getClass();
         ApiDoc apiDoc = (ApiDoc) serviceClass.getAnnotation(ApiDoc.class);
         ApiDesc apiDesc = new ApiDesc();
-        apiDesc.setApiId(serviceId);
+        apiDesc.setApiCodeId(serviceId);
         apiDesc.setServiceTypeFullName(serviceClass.getName());
         apiDesc.setServiceTypeSingleName(serviceClass.getSimpleName());
         apiDesc.setServiceDesc(getApiDocDesc(apiDoc));
@@ -234,9 +234,15 @@ public class ApiDescManager {
 
         return apiDesc;
     }
-    private String getApiDocDesc(ApiDoc apiDoc){
+    private static String getApiDocDesc(ApiDoc apiDoc){
         return apiDoc == null ? "" : apiDoc.desc();
     }
 
+    public static Map<String, ApiDesc> getAllApiDesc() {
+        return allApiDesc;
+    }
 
+    public static void setAllApiDesc(Map<String, ApiDesc> allApiDesc) {
+        ApiDescManager.allApiDesc = allApiDesc;
+    }
 }

@@ -3,11 +3,12 @@ package com.falcon.server.netty;
 import com.falcon.client.CustomerManager;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconResponse;
-import org.apache.log4j.Logger;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by fanshuai on 15-1-24.
  */
 public class NettyClientChannelHandler extends SimpleChannelUpstreamHandler {
-    private final static Logger log = Logger.getLogger(NettyClientChannelHandler.class);
+    private final static Logger log = LoggerFactory.getLogger(NettyClientChannelHandler.class);
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
         List<FalconResponse> responses =(List<FalconResponse>) e.getMessage();
         log.info(responses+" clientHandel received ");

@@ -3,7 +3,9 @@ package com.falcon.client;
 import com.falcon.config.ProviderZKNodeConfig;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.util.FalconAssignTools;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by fanshuai on 15-2-11.
  */
 public class CustomerManager {
-    private static final Logger log = Logger.getLogger(CustomerManager.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomerManager.class);
     private static List<CustomerConfig> customerConfigList = new ArrayList<CustomerConfig>();
     private static Map<String,FalconCustomerClient> allClient = new HashMap<String,FalconCustomerClient>();
     private static Map<String,List<FalconCustomerClient>> serviceClientsMap = new ConcurrentHashMap<String, List<FalconCustomerClient>>();

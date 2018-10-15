@@ -14,27 +14,26 @@
         </developer>
     </developers>
     <modules>
-        <module>falcon-core</module>
-        <module>falcon-demo</module>
-        <module>netty-test</module>
+        <!--<module>falcon-core</module>-->
+        <!--<module>falcon-demo</module>-->
+        <!--<module>netty-test</module>-->
         <module>falcon-netty</module>
-        <module>cacheClient</module>
     </modules>
     <properties>
         <mvn.host>mvn.leya.com</mvn.host>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>Releases</id>
-            <name>Nexus Releases Repository</name>
-            <url>http://${mvn.host}/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>Snapshots</id>
-            <name>Nexus Snapshots Repository</name>
-            <url>http://${mvn.host}/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<repository>-->
+            <!--<id>Releases</id>-->
+            <!--<name>Nexus Releases Repository</name>-->
+            <!--<url>http://${mvn.host}/content/repositories/releases/</url>-->
+        <!--</repository>-->
+        <!--<snapshotRepository>-->
+            <!--<id>Snapshots</id>-->
+            <!--<name>Nexus Snapshots Repository</name>-->
+            <!--<url>http://${mvn.host}/content/repositories/snapshots/</url>-->
+        <!--</snapshotRepository>-->
+    <!--</distributionManagement>-->
 
 </project>

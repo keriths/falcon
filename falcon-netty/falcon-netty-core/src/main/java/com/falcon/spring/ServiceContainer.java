@@ -3,7 +3,6 @@ package com.falcon.spring;
 import com.falcon.config.ProviderConfig;
 import com.falcon.config.ServerConfig;
 import com.falcon.exception.ServiceContainerInitException;
-import com.falcon.regist.ServiceRegistManager;
 import com.falcon.server.ServerManager;
 import com.falcon.server.ServiceProviderManager;
 import lombok.Setter;
@@ -28,7 +27,7 @@ public class ServiceContainer implements Serializable{
 
     public void init() throws Exception {
         if(domain==null){
-            throw new ServiceContainerInitException("ServiceContainer.domain cannt null");
+            throw new ServiceContainerInitException("ServiceContainer.domain cannt null ");
         }
         if(serviceProviders==null || serviceProviders.isEmpty()){
             throw new ServiceContainerInitException("ServiceContainer.serviceProviders cannt null");

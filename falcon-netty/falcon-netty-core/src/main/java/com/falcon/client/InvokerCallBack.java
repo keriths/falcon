@@ -2,13 +2,14 @@ package com.falcon.client;
 
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by fanshuai on 15-2-11.
  */
 public class InvokerCallBack {
-    private final static Logger log = Logger.getLogger(InvokerCallBack.class);
+    private final static Logger log = LoggerFactory.getLogger(InvokerCallBack.class);
     private boolean hasComplace = false;
     private Object returnObject;
     private boolean hasError = false;

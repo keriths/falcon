@@ -1,17 +1,15 @@
 package com.falcon.server.netty;
 
 import com.falcon.client.CustomerManager;
-import com.falcon.client.InvokerCallBack;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconRequest;
-import org.apache.log4j.Logger;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.*;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * Created by fanshuai on 15-2-10.
  */
 public class NettyClient  {
-    private final static Logger log = Logger.getLogger(NettyClient.class);
+    private final static Logger log = LoggerFactory.getLogger(NettyClient.class);
     private ClientBootstrap bootstrap;
     private String ip ;
     private int port ;

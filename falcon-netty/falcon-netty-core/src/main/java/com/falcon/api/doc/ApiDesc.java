@@ -1,6 +1,5 @@
-package aaaa;
+package com.falcon.api.doc;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class ApiDesc implements Serializable{
     /**
      * 接口的唯一ID,如未指定使用serviceName+"#"+methodName+"#"+paramNames
      */
-    private String apiId;
+    private String apiCodeId;
     /**
      * 服务类简单名称
      */
@@ -34,15 +33,15 @@ public class ApiDesc implements Serializable{
     private transient Object serviceObj;
 
 
-    public String getApiId() {
-        if (apiId==null||"".equals(apiId)){
-            apiId = serviceTypeFullName;
+    public String getApiCodeId() {
+        if (apiCodeId ==null||"".equals(apiCodeId)){
+            apiCodeId = serviceTypeFullName;
         }
-        return apiId;
+        return apiCodeId;
     }
 
-    public void setApiId(String apiId) {
-        this.apiId = apiId;
+    public void setApiCodeId(String apiCodeId) {
+        this.apiCodeId = apiCodeId;
     }
 
     public String getServiceTypeSingleName() {

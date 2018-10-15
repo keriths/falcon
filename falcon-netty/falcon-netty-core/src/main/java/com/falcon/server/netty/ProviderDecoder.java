@@ -2,7 +2,7 @@ package com.falcon.server.netty;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.SerializerFactory;
-import org.apache.log4j.Logger;
+
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBufferInputStream;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -10,6 +10,8 @@ import org.jboss.netty.buffer.DynamicChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.codec.oneone.OneToOneDecoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by fanshuai on 15-2-9.
  */
 public class ProviderDecoder extends OneToOneDecoder {
-    private final static Logger log = Logger.getLogger(ProviderDecoder.class);
+    private final static Logger log = LoggerFactory.getLogger(ProviderDecoder.class);
     private  final byte[] LENGTH_PLACEHOLDER = new byte[4];
 
     class DataBuffer{
