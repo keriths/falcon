@@ -1,4 +1,6 @@
-package com.falcon.util.analysis;
+package com.falcon.util.analysis.test;
+
+import com.falcon.util.analysis.annotation.DESC;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +15,7 @@ public class TestDTO implements Serializable{
         this.name=name;
         this.aaa=list;
     }
+    @DESC("名称")
     private String name;
     private List<String> aaa;
     private Map<String,TestDTO> bbb;

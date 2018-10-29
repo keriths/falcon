@@ -1,5 +1,8 @@
-package com.falcon.util.analysis;
+package com.falcon.util.analysis.test;
 
+import com.falcon.util.analysis.annotation.DESC;
+import com.falcon.util.analysis.annotation.MethodID;
+import com.falcon.util.analysis.annotation.ServiceID;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -7,9 +10,12 @@ import java.util.*;
 /**
  * Created by fanshuai on 18/10/28.
  */
+@DESC("测试服务")
+@ServiceID("testService")
 public class TestService {
-
-    public Map<String,TestDTO> maplist(List<TestDTO> testDTOList){
+    @DESC("maplist测试方法")
+    @MethodID("maplist")
+    public Map<String,TestDTO> maplist(@DESC("list类型参数")List<TestDTO> testDTOList){
         if (CollectionUtils.isEmpty(testDTOList)){
             return null;
         }
