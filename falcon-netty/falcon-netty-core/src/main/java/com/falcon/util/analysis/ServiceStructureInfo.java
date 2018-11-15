@@ -29,8 +29,10 @@ public class ServiceStructureInfo implements Serializable{
      */
     private List<ServiceMethodStructureInfo> serviceMethodStructureInfos;
 
-
     public String getServiceId() {
+        if (serviceId==null){
+            serviceId = serviceTypeName;
+        }
         return serviceId;
     }
 

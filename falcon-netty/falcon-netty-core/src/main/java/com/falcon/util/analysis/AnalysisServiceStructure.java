@@ -1,16 +1,9 @@
 package com.falcon.util.analysis;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
 import com.falcon.util.analysis.annotation.DESC;
 import com.falcon.util.analysis.annotation.MethodID;
 import com.falcon.util.analysis.annotation.ServiceID;
-import com.falcon.util.analysis.test.TestDTO;
-import com.falcon.util.analysis.test.TestService;
-import com.google.common.collect.Lists;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -20,6 +13,24 @@ import java.util.*;
  * Created by fanshuai on 18/10/27.
  */
 public class AnalysisServiceStructure {
+    /**
+     * 解析单个服务，返回解析后的服务结构
+     * @param serviceInstance
+     * @return
+     */
+    public static ServiceStructureInfo analysisService(Object serviceInstance){
+        if (serviceInstance==null){
+            return null;
+        }
+        Class serviceClass =  serviceInstance.getClass();
+        ServiceStructureInfo serviceStructureInfo = new ServiceStructureInfo();
+        serviceStructureInfo.setServiceInstance(serviceInstance);
+        serviceStructureInfo.setServiceTypeName(serviceClass.getName());
+        serviceStructureInfo.setServiceDesc(getDesc(serviceClass.getAnnotations()));
+        serviceStructureInfo.setServiceId(getServiceId(serviceClass.getAnnotations()));
+        serviceStructureInfo.setServiceMethodStructureInfos(getServiceMethodStructureInfoList(serviceStructureInfo));
+        return serviceStructureInfo;
+    }
 
     /**
      * 从注解中获得描述
@@ -60,24 +71,7 @@ public class AnalysisServiceStructure {
 
 
 
-    /**
-     * 解析单个服务，返回解析后的服务结构
-     * @param serviceInstance
-     * @return
-     */
-    public static ServiceStructureInfo analysisService(Object serviceInstance){
-        if (serviceInstance==null){
-            return null;
-        }
-        Class serviceClass =  serviceInstance.getClass();
-        ServiceStructureInfo serviceStructureInfo = new ServiceStructureInfo();
-        serviceStructureInfo.setServiceInstance(serviceInstance);
-        serviceStructureInfo.setServiceTypeName(serviceClass.getName());
-        serviceStructureInfo.setServiceDesc(getDesc(serviceClass.getAnnotations()));
-        serviceStructureInfo.setServiceId(getServiceId(serviceClass.getAnnotations()));
-        serviceStructureInfo.setServiceMethodStructureInfos(getServiceMethodStructureInfoList(serviceStructureInfo));
-        return serviceStructureInfo;
-    }
+
     public static List<ServiceMethodStructureInfo> getServiceMethodStructureInfoList(ServiceStructureInfo serviceStructureInfo){
         List<ServiceMethodStructureInfo> serviceMethodStructureInfos = new ArrayList<ServiceMethodStructureInfo>();
         Method[] methods = serviceStructureInfo.getServiceInstance().getClass().getDeclaredMethods();

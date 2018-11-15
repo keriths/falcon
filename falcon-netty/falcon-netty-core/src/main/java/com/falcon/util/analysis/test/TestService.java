@@ -5,6 +5,7 @@ import com.falcon.util.analysis.annotation.MethodID;
 import com.falcon.util.analysis.annotation.ServiceID;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -15,7 +16,7 @@ import java.util.*;
 public class TestService {
     @DESC("maplist测试方法")
     @MethodID("maplist")
-    public Map<String,TestDTO> maplist(@DESC("list类型参数")List<TestDTO> testDTOList){
+    public Map<String,TestDTO> maplist(@DESC("list类型参数")List<TestDTO> testDTOList,String str,int i,long l,BigDecimal b,Long ll){
         if (CollectionUtils.isEmpty(testDTOList)){
             return null;
         }
@@ -25,6 +26,4 @@ public class TestService {
         }
         return testDTOMap;
     }
-
-
 }
