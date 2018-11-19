@@ -33,15 +33,48 @@ public class ServiceParseInvokeTest {
         List<TestDTO> testDTOList = new ArrayList<TestDTO>();
         testDTOList.add(new TestDTO("1", Lists.newArrayList("1", "11", "111")));
         testDTOList.add(new TestDTO("2", Lists.newArrayList("2","22","222")));
-        Map<String,String> params = new HashMap<String, String>();
+        Map<String,String> params = new LinkedHashMap<String, String>();
         params.put("testDTOList",JSON.toJSONString(testDTOList));
         params.put("str","\"strrrr\"");
         params.put("i","10");
         params.put("l","222");
         params.put("ll","333");
         params.put("b","12132434");
-        Object o = process(TestService.class.getName(), "maplist", params);
+        Object o = process(TestService.class.getName(), "maplist","(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long)", new ArrayList<String>(params.values()));
         System.out.println(o);
+    }
+
+    public static Object process(String serviceName,String methodName,String methodParamTypes,List<String> paramValues){
+        ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(serviceName,methodName,methodParamTypes);
+        Assert.notNull(methodName,"not found method "+serviceName+"."+methodName+paramValues);
+        Object serviceInstance = methodStructureInfo.getServiceInstance();
+        Method method = methodStructureInfo.getMethod();
+        Object[] param = getParamObjects(paramValues, methodStructureInfo);
+        try {
+            return method.invoke(serviceInstance,param);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(serviceName+"."+methodName+paramValues+" on invoke IllegalAccessException",e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(serviceName+"."+methodName+paramValues+" on invoke InvocationTargetException",e);
+        }
+
+    }
+    private static Object[] getParamObjects(List<String> paramValues, ServiceMethodStructureInfo methodStructureInfo) {
+        LinkedHashMap<String, ParamStructure> paramStructureLinkedHashMap = methodStructureInfo.getParamStructureMap();
+        if (CollectionUtils.isEmpty(paramStructureLinkedHashMap)){
+            return null;
+        }
+        Object[] param = new Object[paramStructureLinkedHashMap.size()];
+        int i = 0;
+        for (Map.Entry<String, ParamStructure> entry : paramStructureLinkedHashMap.entrySet()){
+            ParamStructure paramStructure = entry.getValue();
+            String paramName = paramStructure.getParamName();
+            Type type = paramStructure.getParamType();
+            String value = paramValues.get(i);
+            param[i] = jsonstrToTypeObject(type, value);
+            i++;
+        }
+        return param;
     }
 
     public static Object process(String className,String methodName,Map<String,String> params){
@@ -57,6 +90,17 @@ public class ServiceParseInvokeTest {
         } catch (InvocationTargetException e) {
             throw new RuntimeException(className+"."+methodName+" on invoke InvocationTargetException",e);
         }
+    }
+
+    private static ServiceMethodStructureInfo getServiceMethodStructureInfo(String serviceName,String methodName,String methodParamTypes) {
+        ServiceStructureInfo serviceStructureInfo = serviceMethodStructureInfoMap.get(serviceName);
+        List<ServiceMethodStructureInfo> methodStructureInfos = serviceStructureInfo.getServiceMethodStructureInfos();
+        for (ServiceMethodStructureInfo methodStructureInfo : methodStructureInfos){
+            if (methodName.equals(methodStructureInfo.getMethodName()) && methodParamTypes.equals(methodStructureInfo.getParamTypes())){
+                return methodStructureInfo;
+            }
+        }
+        return null;
     }
 
     private static ServiceMethodStructureInfo getServiceMethodStructureInfo(String className, String methodName) {
@@ -91,6 +135,9 @@ public class ServiceParseInvokeTest {
     private static Object jsonstrToTypeObject(Type type, String value) {
         Object p = null;
         if (Strings.isNotBlank(value)){
+            if (type instanceof Class && ((Class) type).getName().equals(String.class.getName())){
+                return value;
+            }
             p = JSON.parseObject(value, type, Feature.values());
         }
         return p;

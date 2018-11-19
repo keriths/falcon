@@ -71,17 +71,18 @@ public class AnalysisServiceStructure {
 
 
 
-
+    private static List<String> excludeMethodNameList = new ArrayList<String>();
+    static {
+        for (Method objMethod:Object.class.getDeclaredMethods()){
+            excludeMethodNameList.add(objMethod.getName());
+        }
+    }
     public static List<ServiceMethodStructureInfo> getServiceMethodStructureInfoList(ServiceStructureInfo serviceStructureInfo){
         List<ServiceMethodStructureInfo> serviceMethodStructureInfos = new ArrayList<ServiceMethodStructureInfo>();
         Method[] methods = serviceStructureInfo.getServiceInstance().getClass().getDeclaredMethods();
         for (Method method:methods){
             //排除方法
-            List<String> methodNameList = new ArrayList<String>();
-            for (Method objMethod:Object.class.getDeclaredMethods()){
-                methodNameList.add(objMethod.getName());
-            }
-            if (methodNameList.contains(method.getName())){
+            if (excludeMethodNameList.contains(method.getName())){
                 return null;
             }
             serviceMethodStructureInfos.add(analysisMethod(serviceStructureInfo,method));
@@ -106,8 +107,10 @@ public class AnalysisServiceStructure {
 
         serviceMethodStructureInfo.setMethod(method);
         serviceMethodStructureInfo.setMethodName(method.getName());
+        serviceMethodStructureInfo.setParamTypes(getMethodParamTypeString(method));
         serviceMethodStructureInfo.setMethodId(getMethodId(method.getAnnotations()));
         serviceMethodStructureInfo.setMethodDesc(getDesc(method.getAnnotations()));
+
         /**
          * 防止循环引用，把已经解析的存放在map中
          */
@@ -124,6 +127,22 @@ public class AnalysisServiceStructure {
         serviceMethodStructureInfo.setClassPropertiesStructureMap(classPropertiesStructureMap);
         return serviceMethodStructureInfo;
     }
+
+    private static String getMethodParamTypeString(Method method) {
+        String paramTypes = "(";
+        Class[] paramClasses = method.getParameterTypes();
+        if (paramClasses==null || paramClasses.length==0){
+            paramTypes=")";
+        }else {
+            for (Class c:paramClasses){
+                paramTypes+=c.getName()+",";
+            }
+            paramTypes = paramTypes.substring(0,paramTypes.length()-1);
+            paramTypes+=")";
+        }
+        return paramTypes;
+    }
+
     public static LinkedHashMap<String, ParamStructure> analysisMethodParamters(Method method,Map<String,ClassPropertiesStructure> classPropertiesStructureMap){
         LinkedHashMap<String, ParamStructure> paramNameParamStructureMap = new LinkedHashMap<String, ParamStructure>();
         Type[] paramterTypes = method.getGenericParameterTypes();

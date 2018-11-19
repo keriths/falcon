@@ -39,6 +39,10 @@ public class ServiceMethodStructureInfo implements Serializable{
      */
     private String methodName;
     /**
+     * 方法参数列表
+     */
+    private String paramTypes;
+    /**
      * 具体方法
      */
     private transient Method method;
@@ -143,5 +147,13 @@ public class ServiceMethodStructureInfo implements Serializable{
 
     public void setServiceInstance(Object serviceInstance) {
         this.serviceInstance = serviceInstance;
+    }
+
+    public String getParamTypes() {
+        return paramTypes;
+    }
+
+    public void setParamTypes(String paramTypes) {
+        this.paramTypes = paramTypes;
     }
 }
