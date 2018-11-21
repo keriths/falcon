@@ -2,10 +2,8 @@ package com.falcon.util.analysis.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
-import com.falcon.util.analysis.AnalysisServiceStructure;
-import com.falcon.util.analysis.ParamStructure;
-import com.falcon.util.analysis.ServiceMethodStructureInfo;
-import com.falcon.util.analysis.ServiceStructureInfo;
+import com.caucho.hessian.test.Test;
+import com.falcon.util.analysis.*;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.util.Assert;
@@ -44,6 +42,22 @@ public class ServiceParseInvokeTest {
         params.put("date","1542728084138");
         Object o = process(TestService.class.getName(), "maplist","(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)", new ArrayList<String>(params.values()));
         System.out.println(o);
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        RequestDTO requestDTO = new RequestDTO();
+        requestDTO.setServiceAppKey("TestDomain");
+        requestDTO.setServiceName(TestService.class.getName());
+        requestDTO.setMethodName("maplist");
+        requestDTO.setParamTypeNames("(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)");
+        requestDTO.setParamValues(Lists.newArrayList("[{\"name\":\"nameisshuai\",\"aaa\":[\"1\"]}]","stringisaaa","111","222","333.333","3434","1542728084138"));
+        Object obj = process(requestDTO);
+        System.out.println(JSON.toJSONString(obj));
+    }
+
+    public static Object process(RequestDTO requestDTO){
+        Object o = process(requestDTO.getServiceName(),requestDTO.getMethodName(),requestDTO.getParamTypeNames(),requestDTO.getParamValues());
+        return o;
     }
 
     public static Object process(String serviceName,String methodName,String methodParamTypes,List<String> paramValues){
