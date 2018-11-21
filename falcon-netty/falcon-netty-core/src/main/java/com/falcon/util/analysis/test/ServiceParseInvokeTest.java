@@ -24,6 +24,7 @@ public class ServiceParseInvokeTest {
     public static Map<String,ServiceStructureInfo> serviceMethodStructureInfoMap = new HashMap<String, ServiceStructureInfo>();
 
     public static void main(String args[]){
+        System.out.println(JSON.toJSONString(new Date()));
         BigDecimal ss = new BigDecimal("121.32");
         System.out.println(JSON.toJSONString(ss));
         ServiceStructureInfo serviceStructureInfo = AnalysisServiceStructure.analysisService(new TestService());
@@ -35,27 +36,28 @@ public class ServiceParseInvokeTest {
         testDTOList.add(new TestDTO("2", Lists.newArrayList("2","22","222")));
         Map<String,String> params = new LinkedHashMap<String, String>();
         params.put("testDTOList",JSON.toJSONString(testDTOList));
-        params.put("str","\"strrrr\"");
+        params.put("str","strrrr");
         params.put("i","10");
         params.put("l","222");
         params.put("ll","333");
         params.put("b","12132434");
-        Object o = process(TestService.class.getName(), "maplist","(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long)", new ArrayList<String>(params.values()));
+        params.put("date","1542728084138");
+        Object o = process(TestService.class.getName(), "maplist","(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)", new ArrayList<String>(params.values()));
         System.out.println(o);
     }
 
     public static Object process(String serviceName,String methodName,String methodParamTypes,List<String> paramValues){
         ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(serviceName,methodName,methodParamTypes);
-        Assert.notNull(methodName,"not found method "+serviceName+"."+methodName+paramValues);
+        Assert.notNull(methodStructureInfo,"not found method "+serviceName+"."+methodName+methodParamTypes);
         Object serviceInstance = methodStructureInfo.getServiceInstance();
         Method method = methodStructureInfo.getMethod();
         Object[] param = getParamObjects(paramValues, methodStructureInfo);
         try {
             return method.invoke(serviceInstance,param);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(serviceName+"."+methodName+paramValues+" on invoke IllegalAccessException",e);
+            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke IllegalAccessException",e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(serviceName+"."+methodName+paramValues+" on invoke InvocationTargetException",e);
+            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke InvocationTargetException",e);
         }
 
     }
