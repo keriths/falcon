@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.caucho.hessian.test.Test;
 import com.falcon.util.analysis.*;
+import com.falcon.util.analysis.jetty.JettyServer;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.util.Assert;
@@ -29,6 +30,12 @@ public class ServiceParseInvokeTest {
         System.out.println(JSON.toJSONString(serviceStructureInfo));
         serviceMethodStructureInfoMap.put(serviceStructureInfo.getServiceTypeName(),serviceStructureInfo);
         serviceMethodStructureInfoMap.put(serviceStructureInfo.getServiceId(),serviceStructureInfo);
+        JettyServer jettyServer = new JettyServer(8888,"/");
+        try {
+            jettyServer.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         List<TestDTO> testDTOList = new ArrayList<TestDTO>();
         testDTOList.add(new TestDTO("1", Lists.newArrayList("1", "11", "111")));
         testDTOList.add(new TestDTO("2", Lists.newArrayList("2","22","222")));
@@ -53,6 +60,11 @@ public class ServiceParseInvokeTest {
         requestDTO.setParamValues(Lists.newArrayList("[{\"name\":\"nameisshuai\",\"aaa\":[\"1\"]}]","stringisaaa","111","222","333.333","3434","1542728084138"));
         Object obj = process(requestDTO);
         System.out.println(JSON.toJSONString(obj));
+        try {
+            Thread.sleep(1000*60*60*24);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static Object process(RequestDTO requestDTO){
