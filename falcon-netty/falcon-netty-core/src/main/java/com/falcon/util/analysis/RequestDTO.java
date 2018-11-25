@@ -38,7 +38,7 @@ public class RequestDTO implements Serializable{
     /**
      * 调用远程服务方法的参数值，和参数列表11对应
      */
-    private List<String> paramValues;
+    private Object[] paramValues;
 
 
     public String getSequenceNum() {
@@ -97,11 +97,11 @@ public class RequestDTO implements Serializable{
         this.paramTypeNames = paramTypeNames;
     }
 
-    public List<String> getParamValues() {
+    public Object[] getParamValues() {
         return paramValues;
     }
 
-    public void setParamValues(List<String> paramValues) {
+    public void setParamValues(Object[] paramValues) {
         this.paramValues = paramValues;
     }
 }

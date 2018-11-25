@@ -2,7 +2,7 @@ package com.falcon.util.analysis.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
-import com.caucho.hessian.test.Test;
+import com.falcon.server.servlet.FalconRequest;
 import com.falcon.util.analysis.*;
 import com.falcon.util.analysis.jetty.JettyServer;
 import com.google.common.collect.Lists;
@@ -47,8 +47,8 @@ public class ServiceParseInvokeTest {
         params.put("ll","333");
         params.put("b","12132434");
         params.put("date","1542728084138");
-        Object o = process(TestService.class.getName(), "maplist","(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)", new ArrayList<String>(params.values()));
-        System.out.println(o);
+//        Object o = process(TestService.class.getName(), "maplist","(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)", new ArrayList<String>(params.values()));
+//        System.out.println(o);
         System.out.println("");
         System.out.println("");
         System.out.println("");
@@ -57,7 +57,7 @@ public class ServiceParseInvokeTest {
         requestDTO.setServiceName(TestService.class.getName());
         requestDTO.setMethodName("maplist");
         requestDTO.setParamTypeNames("(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)");
-        requestDTO.setParamValues(Lists.newArrayList("[{\"name\":\"nameisshuai\",\"aaa\":[\"1\"]}]","stringisaaa","111","222","333.333","3434","1542728084138"));
+        requestDTO.setParamValues(new Object[]{"[{\"name\":\"nameisshuai\",\"aaa\":[\"1\"]}]","stringisaaa","111","222","333.333","3434","1542728084138"});
         Object obj = process(requestDTO);
         System.out.println(JSON.toJSONString(obj));
         try {
@@ -71,8 +71,12 @@ public class ServiceParseInvokeTest {
         Object o = process(requestDTO.getServiceName(),requestDTO.getMethodName(),requestDTO.getParamTypeNames(),requestDTO.getParamValues());
         return o;
     }
+    public static Object process(FalconRequest falconRequest){
+        Object o = process(falconRequest.getServiceInterfaceName(),falconRequest.getServiceMethod(),falconRequest.getParamTypesName(),falconRequest.getParameters());
+        return o;
+    }
 
-    public static Object process(String serviceName,String methodName,String methodParamTypes,List<String> paramValues){
+    public static Object process(String serviceName,String methodName,String methodParamTypes,Object[] paramValues){
         ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(serviceName,methodName,methodParamTypes);
         Assert.notNull(methodStructureInfo,"not found method "+serviceName+"."+methodName+methodParamTypes);
         Object serviceInstance = methodStructureInfo.getServiceInstance();
@@ -87,7 +91,7 @@ public class ServiceParseInvokeTest {
         }
 
     }
-    private static Object[] getParamObjects(List<String> paramValues, ServiceMethodStructureInfo methodStructureInfo) {
+    private static Object[] getParamObjects(Object[] paramValues, ServiceMethodStructureInfo methodStructureInfo) {
         LinkedHashMap<String, ParamStructure> paramStructureLinkedHashMap = methodStructureInfo.getParamStructureMap();
         if (CollectionUtils.isEmpty(paramStructureLinkedHashMap)){
             return null;
@@ -98,8 +102,8 @@ public class ServiceParseInvokeTest {
             ParamStructure paramStructure = entry.getValue();
             String paramName = paramStructure.getParamName();
             Type type = paramStructure.getParamType();
-            String value = paramValues.get(i);
-            param[i] = jsonstrToTypeObject(type, value);
+            Object value = paramValues[i];
+            param[i] = jsonstrToTypeObject(type, (String)value);
             i++;
         }
         return param;

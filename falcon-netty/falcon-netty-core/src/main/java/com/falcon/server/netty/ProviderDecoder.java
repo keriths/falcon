@@ -27,10 +27,10 @@ public class ProviderDecoder extends OneToOneDecoder {
     private final static Logger log = LoggerFactory.getLogger(ProviderDecoder.class);
     private  final byte[] LENGTH_PLACEHOLDER = new byte[4];
 
-    class DataBuffer{
-        Integer channelId ;
-
-    }
+//    class DataBuffer{
+//        Integer channelId ;
+//
+//    }
 
     private String oldBufKey = "af";
     private ChannelBuffer getAttachment(ChannelHandlerContext ctx,String oldBufKey){
@@ -62,19 +62,19 @@ public class ProviderDecoder extends OneToOneDecoder {
 
     }
 
-    private Object getMsg(ChannelBuffer buf) throws Exception {
-        long frameLength=buf.getUnsignedInt(buf.readerIndex());
-        int msgLength = (int) frameLength;
-        log.info("  ****************msgLength:"+msgLength);
-        if(buf.readableBytes()-4<msgLength){
-            log.error("   ****************readableBytesSize("+buf.readableBytes()+")-4<msgLength("+msgLength+")");
-            return null;
-        }
-        buf.skipBytes(LENGTH_PLACEHOLDER.length);
-        ChannelBuffer frameBuffer=buf.slice(buf.readerIndex(), msgLength);
-        buf.readerIndex(buf.readerIndex()+msgLength);
-        return readUseHessian(new ChannelBufferInputStream(frameBuffer));
-    }
+//    private Object getMsg(ChannelBuffer buf) throws Exception {
+//        long frameLength=buf.getUnsignedInt(buf.readerIndex());
+//        int msgLength = (int) frameLength;
+//        log.info("  ****************msgLength:"+msgLength);
+//        if(buf.readableBytes()-4<msgLength){
+//            log.error("   ****************readableBytesSize("+buf.readableBytes()+")-4<msgLength("+msgLength+")");
+//            return null;
+//        }
+//        buf.skipBytes(LENGTH_PLACEHOLDER.length);
+//        ChannelBuffer frameBuffer=buf.slice(buf.readerIndex(), msgLength);
+//        buf.readerIndex(buf.readerIndex()+msgLength);
+//        return readUseHessian(new ChannelBufferInputStream(frameBuffer));
+//    }
     @Override
     protected Object decode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
         log.info("decode channel:"+channel+" msg:"+msg);
