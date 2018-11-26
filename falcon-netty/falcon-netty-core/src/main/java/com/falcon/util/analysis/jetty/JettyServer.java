@@ -1,7 +1,5 @@
 package com.falcon.util.analysis.jetty;
 
-import com.falcon.server.jetty.ApiDocJettyServlet;
-import com.falcon.server.jetty.ApiInvokerJettyServlet;
 import com.falcon.server.netty.Server;
 import com.google.common.collect.Lists;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -53,7 +51,8 @@ public class JettyServer implements Server {
             }
         }
         context.addServlet(ApiInvokerHttpServlet.class, "/api/invoke");
-        context.addServlet(ApiDocJettyServlet.class, "/api/doc");
+        context.addServlet(AllServiceNamesJettyServlet.class, "/api/doc/allServiceNames");
+        context.addServlet(ServiceMethodsJettyServlet.class, "/api/doc/serviceInfo");
         context.addFilter(JettyDefaultFilter.class, "/*", EnumSet.copyOf(Lists.newArrayList(DispatcherType.ASYNC)));
     }
 

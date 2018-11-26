@@ -20,8 +20,8 @@ public class ServiceMethod {
     public ServiceMethod(Object service,Method method){
         this.service = service;
         this.method = method;
-        this.paramClasses = this.regulateTypes(this.method.getParameterTypes());
-        this.paramNamesStr = getParamNameString(paramClasses);
+        this.paramClasses = this.method.getParameterTypes();
+        this.paramNamesStr = ServiceManager.getMethodParamTypeString(paramClasses);
     }
 
     public Object invoke(Object[] params) throws InvocationTargetException, IllegalAccessException {
@@ -29,37 +29,25 @@ public class ServiceMethod {
     }
 
 
-    public static String getParamNameString(Class[] paramterTypes){
-        ServiceManager.
-        if(paramterTypes==null || paramterTypes.length==0){
-            return "";
-        }
-        Class[] types = regulateTypes(paramterTypes);
-        StringBuilder sb = new StringBuilder();
-        for (Class c : types) {
-            sb.append(c.getName()).append(",");
-        }
-        return sb.toString().substring(0,sb.toString().length()-1);
-    }
 
-    public static  Class<?>[] regulateTypes(Class<?>[] types) {
-        for(int i = 0; i < types.length; ++i) {
-            if(types[i] == Byte.TYPE) {
-                types[i] = Byte.class;
-            } else if(types[i] == Short.TYPE) {
-                types[i] = Short.class;
-            } else if(types[i] == Integer.TYPE) {
-                types[i] = Integer.class;
-            } else if(types[i] == Boolean.TYPE) {
-                types[i] = Boolean.class;
-            } else if(types[i] == Long.TYPE) {
-                types[i] = Long.class;
-            } else if(types[i] == Float.TYPE) {
-                types[i] = Float.class;
-            } else if(types[i] == Double.TYPE) {
-                types[i] = Double.class;
-            }
-        }
-        return types;
-    }
+//    public static  Class<?>[] regulateTypes(Class<?>[] types) {
+//        for(int i = 0; i < types.length; ++i) {
+//            if(types[i] == Byte.TYPE) {
+//                types[i] = Byte.class;
+//            } else if(types[i] == Short.TYPE) {
+//                types[i] = Short.class;
+//            } else if(types[i] == Integer.TYPE) {
+//                types[i] = Integer.class;
+//            } else if(types[i] == Boolean.TYPE) {
+//                types[i] = Boolean.class;
+//            } else if(types[i] == Long.TYPE) {
+//                types[i] = Long.class;
+//            } else if(types[i] == Float.TYPE) {
+//                types[i] = Float.class;
+//            } else if(types[i] == Double.TYPE) {
+//                types[i] = Double.class;
+//            }
+//        }
+//        return types;
+//    }
 }

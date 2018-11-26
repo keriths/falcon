@@ -55,6 +55,6 @@ public class ServiceContainer implements Serializable{
         //启动服务
         ServerManager.startServer(serverConfig);
         //注册服务
-        ServiceProviderManager.registService();
+//        ServiceProviderManager.registService();
     }
 }

@@ -19,16 +19,22 @@ public class AnalysisServiceStructure {
      * @return
      */
     public static ServiceStructureInfo analysisService(Object serviceInstance){
+        return analysisService(null,serviceInstance);
+    }
+
+    public static ServiceStructureInfo analysisService(String serviceKey,Object serviceInstance){
         if (serviceInstance==null){
             return null;
         }
-        Class serviceClass =  serviceInstance.getClass();
         ServiceStructureInfo serviceStructureInfo = new ServiceStructureInfo();
+        Class serviceClass =  serviceInstance.getClass();
+
+        serviceStructureInfo.setServiceId(getServiceKey(serviceKey, serviceClass));
         serviceStructureInfo.setServiceInstance(serviceInstance);
         serviceStructureInfo.setServiceTypeName(serviceClass.getName());
         serviceStructureInfo.setServiceDesc(getDesc(serviceClass.getAnnotations()));
-        serviceStructureInfo.setServiceId(getServiceId(serviceClass.getAnnotations()));
         serviceStructureInfo.setServiceMethodStructureInfos(getServiceMethodStructureInfoList(serviceStructureInfo));
+
         return serviceStructureInfo;
     }
 
@@ -53,6 +59,16 @@ public class AnalysisServiceStructure {
             }
         }
         return null;
+    }
+    public static String getServiceKey(String serviceKey,Class serviceClass){
+        if (serviceKey!=null && serviceKey.length()>0){
+            return serviceKey;
+        }
+        Annotation annotation = getAnnotation(serviceClass.getAnnotations(),ServiceID.class);
+        if (annotation==null){
+            return serviceClass.getName();
+        }
+        return ((ServiceID)annotation).value();
     }
     public static String getServiceId(Annotation[] annotations){
         Annotation annotation = getAnnotation(annotations,ServiceID.class);
@@ -79,11 +95,11 @@ public class AnalysisServiceStructure {
     }
     public static List<ServiceMethodStructureInfo> getServiceMethodStructureInfoList(ServiceStructureInfo serviceStructureInfo){
         List<ServiceMethodStructureInfo> serviceMethodStructureInfos = new ArrayList<ServiceMethodStructureInfo>();
-        Method[] methods = serviceStructureInfo.getServiceInstance().getClass().getDeclaredMethods();
+        Method[] methods = serviceStructureInfo.getServiceInstance().getClass().getMethods();
         for (Method method:methods){
             //排除方法
             if (excludeMethodNameList.contains(method.getName())){
-                return null;
+                continue;
             }
             serviceMethodStructureInfos.add(analysisMethod(serviceStructureInfo,method));
         }
@@ -91,13 +107,6 @@ public class AnalysisServiceStructure {
     }
     public static ServiceMethodStructureInfo analysisMethod(ServiceStructureInfo serviceStructureInfo,Method method){
         //排除方法
-        List<String> methodNameList = new ArrayList<String>();
-        for (Method objMethod:Object.class.getDeclaredMethods()){
-            methodNameList.add(objMethod.getName());
-        }
-        if (methodNameList.contains(method.getName())){
-            return null;
-        }
         ServiceMethodStructureInfo serviceMethodStructureInfo = new ServiceMethodStructureInfo();
 
         serviceMethodStructureInfo.setServiceId(serviceStructureInfo.getServiceId());
@@ -107,7 +116,7 @@ public class AnalysisServiceStructure {
 
         serviceMethodStructureInfo.setMethod(method);
         serviceMethodStructureInfo.setMethodName(method.getName());
-        serviceMethodStructureInfo.setParamTypes(ServiceManager.getMethodParamTypeString(method.getParameterTypes());
+        serviceMethodStructureInfo.setParamTypes(ServiceManager.getMethodParamTypeString(method.getParameterTypes()));
         serviceMethodStructureInfo.setMethodId(getMethodId(method.getAnnotations()));
         serviceMethodStructureInfo.setMethodDesc(getDesc(method.getAnnotations()));
 

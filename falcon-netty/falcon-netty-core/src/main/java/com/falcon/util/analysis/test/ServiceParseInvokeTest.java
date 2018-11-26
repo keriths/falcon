@@ -72,7 +72,7 @@ public class ServiceParseInvokeTest {
         return o;
     }
     public static Object process(FalconRequest falconRequest){
-        Object o = process(falconRequest.getServiceInterfaceName(),falconRequest.getServiceMethod(),falconRequest.getParamTypesName(),falconRequest.getParameters());
+        Object o = process(falconRequest.getServiceInterfaceName(),falconRequest.getServiceMethod(),falconRequest.getParameterTypeNames(),falconRequest.getParameters());
         return o;
     }
 

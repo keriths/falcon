@@ -1,8 +1,9 @@
-package com.falcon.server.jetty;
+package com.falcon.util.analysis.jetty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.falcon.api.doc.ApiDescManager;
+import com.falcon.util.analysis.ServiceManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,22 +14,13 @@ import java.io.IOException;
 /**
  * Created by fanshuai on 18/9/27.
  */
-public class ApiDocJettyServlet extends HttpServlet {
+public class AllServiceNamesJettyServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        JSONObject ret =  new JSONObject();
-//        try {
-//            String ttsTxt = req.getParameter("text");
-//            String outFile = System.nanoTime() + ".mp4";
-//            ret.put("ret","0");
-//        }catch (Exception ex){
-//            ret.put("ret","-1");
-//            ret.put("error",ex.getMessage());
-//        }
-        resp.getWriter().write(JSON.toJSONString(ApiDescManager.getAllApiDesc()));
+        resp.getWriter().write(JSON.toJSONString(ServiceManager.getServiceNames()));
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().write(JSON.toJSONString(ApiDescManager.getAllApiDesc()));
+        doPost(req,resp);
     }
 }

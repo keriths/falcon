@@ -15,8 +15,8 @@ public class ServiceManager {
      * 解析一个服务
      * @param serviceInstance
      */
-    public static void analysisService(Object serviceInstance){
-        ServiceStructureInfo serviceStructureInfo = AnalysisServiceStructure.analysisService(serviceInstance);
+    public static void analysisService(String serviceKey,Object serviceInstance){
+        ServiceStructureInfo serviceStructureInfo = AnalysisServiceStructure.analysisService(serviceKey,serviceInstance);
         if (serviceStructureInfo==null){
             return;
         }
@@ -64,7 +64,7 @@ public class ServiceManager {
             return;
         }
         for (ProviderConfig providerConfig:providerConfigList){
-            analysisService(providerConfig.getService());
+            analysisService(providerConfig.getServiceInterface().getName(),providerConfig.getService());
         }
     }
 
