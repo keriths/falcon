@@ -1,5 +1,6 @@
 package com.falcon.server.method;
 
+import com.falcon.util.analysis.ServiceManager;
 import lombok.Data;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +30,7 @@ public class ServiceMethod {
 
 
     public static String getParamNameString(Class[] paramterTypes){
+        ServiceManager.
         if(paramterTypes==null || paramterTypes.length==0){
             return "";
         }

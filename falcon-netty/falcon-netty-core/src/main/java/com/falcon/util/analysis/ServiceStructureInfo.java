@@ -1,7 +1,9 @@
 package com.falcon.util.analysis;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 解析的服务结构
@@ -28,6 +30,7 @@ public class ServiceStructureInfo implements Serializable{
      * 当前服务提供的所有方法列表
      */
     private List<ServiceMethodStructureInfo> serviceMethodStructureInfos;
+    private Map<String,ServiceMethodStructureInfo> serviceMethodStructureInfoMap = new HashMap<String, ServiceMethodStructureInfo>();
 
     public String getServiceId() {
         if (serviceId==null){
@@ -70,5 +73,18 @@ public class ServiceStructureInfo implements Serializable{
 
     public void setServiceMethodStructureInfos(List<ServiceMethodStructureInfo> serviceMethodStructureInfos) {
         this.serviceMethodStructureInfos = serviceMethodStructureInfos;
+        Map<String,ServiceMethodStructureInfo> methodMap = new HashMap<String, ServiceMethodStructureInfo>();
+        if (serviceMethodStructureInfos==null){
+            serviceMethodStructureInfoMap = methodMap;
+            return;
+        }
+        for (ServiceMethodStructureInfo serviceMethodStructureInfo : serviceMethodStructureInfos){
+            methodMap.put(serviceMethodStructureInfo.getMethodName()+serviceMethodStructureInfo.getParamTypes(),serviceMethodStructureInfo);
+        }
+        serviceMethodStructureInfoMap = methodMap;
+    }
+
+    public ServiceMethodStructureInfo getServiceMethodStructureInfo(String methodName,String paramTypes) {
+        return serviceMethodStructureInfoMap.get(methodName+paramTypes);
     }
 }

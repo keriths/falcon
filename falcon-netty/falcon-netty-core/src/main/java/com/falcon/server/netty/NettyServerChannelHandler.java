@@ -6,6 +6,8 @@ import com.falcon.server.ServiceProviderManager;
 import com.falcon.server.method.ServiceMethod;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.server.servlet.FalconResponse;
+import com.falcon.util.analysis.ServiceManager;
+import com.falcon.util.analysis.ServiceMethodStructureInfo;
 import org.jboss.netty.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,35 +53,42 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     String serviceName = request.getServiceInterfaceName();
                     String methodName = request.getServiceMethod();
                     Object[] paramters = request.getParameters();
-                    Class[] paramTypes = request.getParameterTypes();
-                    if(methodName.equals("toString")){
-                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
-                        if (provider==null){
-                            throw new Exception(" provider service("+serviceName+") not found ");
-                        }
-                        response.setRetObject(provider.getService().toString());
-                    }else if(methodName.equals("hashCode")){
-                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
-                        if (provider==null){
-                            throw new Exception(" provider service("+serviceName+") not found ");
-                        }
-                        response.setRetObject(provider.getService().hashCode());
+                    ServiceMethodStructureInfo serviceMethodStructureInfo = ServiceManager.getServiceMethodStructureInfo(serviceName,methodName,request.getParameterTypeNames());
+                    if (serviceMethodStructureInfo==null){
+                        throw new Exception("");
                     }
-                    else {
-                        ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName, methodName, ServiceMethod.getParamNameString(paramTypes));
-                        if (serviceMethod == null) {
-                            response.setErrorMsg(" method not found ");
-                        } else {
-                            Object o = serviceMethod.invoke(paramters);
-                            log.info(request+" has success complete ");
-                            if (o != null && !(o instanceof Serializable)) {
-                                throw new Exception(o.getClass().getName() + " no serializable ");
-                            } else {
-                                response.setRetObject(o);
-                                log.info(response+" has success complete ");
-                            }
-                        }
-                    }
+                    Object retObj = serviceMethodStructureInfo.getMethod().invoke(serviceMethodStructureInfo.getServiceInstance(),paramters);
+                    response.setRetObject(retObj);
+//
+////                    Class[] paramTypes = request.getParameterTypes();
+//                    if(methodName.equals("toString")){
+//                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
+//                        if (provider==null){
+//                            throw new Exception(" provider service("+serviceName+") not found ");
+//                        }
+//                        response.setRetObject(provider.getService().toString());
+//                    }else if(methodName.equals("hashCode")){
+//                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
+//                        if (provider==null){
+//                            throw new Exception(" provider service("+serviceName+") not found ");
+//                        }
+//                        response.setRetObject(provider.getService().hashCode());
+//                    }
+//                    else {
+//                        ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName, methodName,request.getParameterTypeNames());
+//                        if (serviceMethod == null) {
+//                            response.setErrorMsg(" method not found ");
+//                        } else {
+//                            Object o = serviceMethod.invoke(paramters);
+//                            log.info(request+" has success complete ");
+//                            if (o != null && !(o instanceof Serializable)) {
+//                                throw new Exception(o.getClass().getName() + " no serializable ");
+//                            } else {
+//                                response.setRetObject(o);
+//                                log.info(response+" has success complete ");
+//                            }
+//                        }
+//                    }
                 } catch (IllegalAccessException e) {
                     log.error(request + " IllegalAccessException exception :", e);
                     response.setErrorMsg("InvocationTargetException:"+e.getMessage());

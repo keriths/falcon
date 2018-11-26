@@ -11,7 +11,8 @@ public class FalconRequest implements Serializable{
     private String serviceInterfaceName;
     private String serviceMethod;
     private Object[] parameters;
-    private Class[] parameterTypes;
+//    private Class[] parameterTypes;
+    private String parameterTypeNames;
     private String paramTypesName;
     private long sequence = System.currentTimeMillis()*1000+(new Random().nextInt(999));
 
@@ -47,13 +48,9 @@ public class FalconRequest implements Serializable{
         this.sequence = sequence;
     }
 
-    public Class[] getParameterTypes() {
-        return parameterTypes;
-    }
 
-    public void setParameterTypes(Class[] parameterTypes) {
-        this.parameterTypes = parameterTypes;
-    }
+
+
 
     public String getDomain() {
         return domain;
@@ -68,17 +65,13 @@ public class FalconRequest implements Serializable{
     public String toString() {
         return "seq:"+getSequence()+" method:"+getServiceMethod()+" service:"+getServiceInterfaceName();
     }
-    public String getParamTypesName(){
-        if (paramTypesName!=null){
-            return paramTypesName;
-        }
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("(");
-        for (Class c : parameterTypes)
-        {
-            buffer.append(c.getName()).append(",");
-        }
-        paramTypesName = buffer.substring(0,buffer.length()-1)+")";
-        return paramTypesName;
+
+
+    public String getParameterTypeNames() {
+        return parameterTypeNames;
+    }
+
+    public void setParameterTypeNames(String parameterTypeNames) {
+        this.parameterTypeNames = parameterTypeNames;
     }
 }

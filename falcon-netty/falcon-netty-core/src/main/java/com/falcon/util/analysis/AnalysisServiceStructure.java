@@ -107,7 +107,7 @@ public class AnalysisServiceStructure {
 
         serviceMethodStructureInfo.setMethod(method);
         serviceMethodStructureInfo.setMethodName(method.getName());
-        serviceMethodStructureInfo.setParamTypes(getMethodParamTypeString(method));
+        serviceMethodStructureInfo.setParamTypes(ServiceManager.getMethodParamTypeString(method.getParameterTypes());
         serviceMethodStructureInfo.setMethodId(getMethodId(method.getAnnotations()));
         serviceMethodStructureInfo.setMethodDesc(getDesc(method.getAnnotations()));
 
@@ -126,21 +126,6 @@ public class AnalysisServiceStructure {
 
         serviceMethodStructureInfo.setClassPropertiesStructureMap(classPropertiesStructureMap);
         return serviceMethodStructureInfo;
-    }
-
-    private static String getMethodParamTypeString(Method method) {
-        String paramTypes = "(";
-        Class[] paramClasses = method.getParameterTypes();
-        if (paramClasses==null || paramClasses.length==0){
-            paramTypes=")";
-        }else {
-            for (Class c:paramClasses){
-                paramTypes+=c.getName()+",";
-            }
-            paramTypes = paramTypes.substring(0,paramTypes.length()-1);
-            paramTypes+=")";
-        }
-        return paramTypes;
     }
 
     public static LinkedHashMap<String, ParamStructure> analysisMethodParamters(Method method,Map<String,ClassPropertiesStructure> classPropertiesStructureMap){

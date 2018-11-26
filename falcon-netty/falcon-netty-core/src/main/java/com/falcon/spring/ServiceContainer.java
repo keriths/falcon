@@ -5,10 +5,14 @@ import com.falcon.config.ServerConfig;
 import com.falcon.exception.ServiceContainerInitException;
 import com.falcon.server.ServerManager;
 import com.falcon.server.ServiceProviderManager;
+import com.falcon.util.analysis.AnalysisServiceStructure;
+import com.falcon.util.analysis.ServiceManager;
+import com.falcon.util.analysis.ServiceStructureInfo;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +49,7 @@ public class ServiceContainer implements Serializable{
             providerConfigList.add(providerConfig);
         }
 
+        ServiceManager.analysisServices(providerConfigList);
         //解析配置
         ServiceProviderManager.addServiceProvider(providerConfigList);
         //启动服务

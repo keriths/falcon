@@ -45,10 +45,23 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
             FalconRequest request = new FalconRequest();
             request.setParameters(parameters);
             request.setServiceMethod(method.getName());
-            request.setParameterTypes(method.getParameterTypes());
+            request.setParameterTypeNames(getParamTypesName(method.getParameterTypes()));
             request.setServiceInterfaceName(customerConfig.getServiceInterface().getName());
             return CustomerManager.invoke(request,customerConfig);
         }
+    }
+
+    public String getParamTypesName(Class[] parameterTypes){
+        if (parameterTypes == null || parameterTypes.length == 0){
+            return "()";
+        }
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("(");
+        for (Class c : parameterTypes)
+        {
+            buffer.append(c.getName()).append(",");
+        }
+        return buffer.substring(0,buffer.length()-1)+")";
     }
     @Override
     public Class<?> getObjectType() {
