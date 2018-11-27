@@ -1,5 +1,7 @@
 package com.falcon.demo.api.dto;
 
+import com.falcon.util.analysis.annotation.DESC;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -7,9 +9,13 @@ import java.math.BigDecimal;
  * Created by fanshuai on 15/4/7.
  */
 public class HelloDTO implements Serializable {
+    @DESC(value = "名称")
     private String name;
+    @DESC(value = "value")
     private String val;
+    @DESC(value = "bigdecimal")
     public BigDecimal b ;
+    @DESC(value = "HelloDTO2")
     private HelloDTO2 h2 = new HelloDTO2();
 
     public HelloDTO2 getH2() {

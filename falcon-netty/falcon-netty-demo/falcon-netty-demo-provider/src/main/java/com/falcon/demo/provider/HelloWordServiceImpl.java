@@ -2,6 +2,7 @@ package com.falcon.demo.provider;
 
 import com.falcon.demo.api.HelloWordService;
 import com.falcon.demo.api.dto.HelloDTO;
+import com.falcon.util.analysis.annotation.DESC;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class HelloWordServiceImpl implements HelloWordService {
         }
     }
     @Override
+    @DESC(value = "hellolist")
     public List<HelloDTO> hellolist(List<HelloDTO> helloDTOs) {
         try {
             HelloDTO helloDTO1 = new HelloDTO();

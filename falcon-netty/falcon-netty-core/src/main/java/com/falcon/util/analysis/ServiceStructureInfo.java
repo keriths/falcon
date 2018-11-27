@@ -88,5 +88,9 @@ public class ServiceStructureInfo implements Serializable{
         return serviceMethodStructureInfoMap.get(methodName+paramTypes);
     }
 
+    public ServiceMethodStructureInfo getServiceMethodStructureInfo(String methodInfo) {
+        return serviceMethodStructureInfoMap.get(methodInfo);
+    }
+
 
 }

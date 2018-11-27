@@ -1,7 +1,7 @@
 package com.falcon.server.jetty;
 
 import com.falcon.server.netty.Server;
-import com.falcon.util.analysis.jetty.AllServiceNamesJettyServlet;
+import com.falcon.util.analysis.jetty.ApiDocJettyServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import java.net.UnknownHostException;
@@ -49,7 +49,7 @@ public class JettyServer implements Server {
             }
         }
         context.addServlet(ApiInvokerJettyServlet.class, "/api/invoke");
-        context.addServlet(AllServiceNamesJettyServlet.class, "/api/doc");
+        context.addServlet(ApiDocJettyServlet.class, "/api/doc");
     }
 
     @Override
