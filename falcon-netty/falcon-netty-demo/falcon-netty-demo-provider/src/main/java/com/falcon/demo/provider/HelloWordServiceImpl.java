@@ -11,16 +11,17 @@ import java.util.List;
 /**
  * Created by fanshuai on 15/4/7.
  */
+@DESC("helloWord测试服务")
 public class HelloWordServiceImpl implements HelloWordService {
     @Override
-    public String sayHello(String name) {
+    @DESC("sayHello方法")
+    public String sayHello(@DESC("名称") String name) {
         return "hello : "+name;
     }
 
-
-
     @Override
-    public HelloDTO hello(HelloDTO helloDTO) {
+    @DESC("hello方法")
+    public HelloDTO hello(@DESC("hello实体")HelloDTO helloDTO) {
         try {
             HelloDTO helloDTO1 = new HelloDTO();
             helloDTO1.setName("hello : ");
@@ -29,9 +30,10 @@ public class HelloWordServiceImpl implements HelloWordService {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     @DESC(value = "hellolist")
-    public List<HelloDTO> hellolist(List<HelloDTO> helloDTOs) {
+    public List<HelloDTO> hellolist(@DESC("hello实体列表")List<HelloDTO> helloDTOs) {
         try {
             HelloDTO helloDTO1 = new HelloDTO();
             helloDTO1.setB(new BigDecimal("1212"));
