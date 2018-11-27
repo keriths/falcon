@@ -35,7 +35,6 @@ public class ApiInvokerHttpServlet extends HttpServlet {
         try {
             String requestBody = getRequestContentString(req);
             FalconRequest requestDTO = JSON.toJavaObject(JSON.parseObject(requestBody), FalconRequest.class);
-
             Object obj = process(requestDTO.getServiceInterfaceName(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
             resp.getWriter().write(JSON.toJSONString(obj));
             resp.flushBuffer();

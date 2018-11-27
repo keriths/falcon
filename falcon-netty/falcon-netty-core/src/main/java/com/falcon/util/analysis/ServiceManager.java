@@ -1,8 +1,15 @@
 package com.falcon.util.analysis;
 
 import com.falcon.config.ProviderConfig;
+import com.falcon.server.invoke.handle.DoServiceMethodInvokeHandler;
+import com.falcon.server.invoke.handle.InvokeServiceMethodContext;
+import com.falcon.server.invoke.handle.ServiceInvokeHandle;
+import com.falcon.server.invoke.handle.ServiceInvokeHandleChain;
+import com.falcon.server.servlet.FalconRequest;
 import com.google.common.collect.Lists;
+import org.springframework.util.Assert;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -78,4 +85,27 @@ public class ServiceManager {
         }
         return buffer.substring(0,buffer.length()-1)+")";
     }
+
+    public Object invokeServiceMethod(FalconRequest request,String protocol) throws Exception{
+        try {
+            String service = request.getServiceInterfaceName();
+            String method = request.getServiceMethod();
+            String paramTypeNames = request.getParameterTypeNames();
+            ServiceMethodStructureInfo methodStructureInfo = ServiceManager.getServiceMethodStructureInfo(service, method, paramTypeNames);
+            Assert.notNull(methodStructureInfo, service + "." + method + paramTypeNames + " service not found ");
+            ServiceInvokeHandleChain invokeHandleChain = new ServiceInvokeHandleChain();
+            invokeHandleChain.addServiceInvokeHandle(new DoServiceMethodInvokeHandler());
+            InvokeServiceMethodContext invokeServiceMethodContext = new InvokeServiceMethodContext();
+            invokeServiceMethodContext.setMethodStructureInfo(methodStructureInfo);
+            invokeServiceMethodContext.setFalconRequest(request);
+            invokeServiceMethodContext.setProtocol(protocol);
+            invokeHandleChain.handleInvokeMethod(invokeServiceMethodContext);
+            return invokeServiceMethodContext.getRetValue();
+        } catch (IllegalArgumentException e){
+            throw new Exception(e);
+        } catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
 }

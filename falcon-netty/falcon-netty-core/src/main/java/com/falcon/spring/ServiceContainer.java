@@ -51,7 +51,7 @@ public class ServiceContainer implements Serializable{
 
         ServiceManager.analysisServices(providerConfigList);
         //解析配置
-        ServiceProviderManager.addServiceProvider(providerConfigList);
+//        ServiceProviderManager.addServiceProvider(providerConfigList);
         //启动服务
         ServerManager.startServer(serverConfig);
         //注册服务

@@ -16,16 +16,15 @@ import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by fanshuai on 15-1-23.
  */
 public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
     private static  final Logger log = LoggerFactory.getLogger(NettyServerChannelHandler.class);
-    ExecutorService threadPool =  Executors.newCachedThreadPool();
+//    ExecutorService threadPool =  Executors.newCachedThreadPool();
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e)
             throws Exception {
         //log.error("***&&&***",e.get);
@@ -41,7 +40,15 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
             doRequest(request, ctx.getChannel());
         }
     }
-
+    ExecutorService nettyServerInvokeThreadPool = new ThreadPoolExecutor(100, 500, 0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(1000),
+            new ThreadFactory() {
+                AtomicInteger threadNum = new AtomicInteger(0);
+                @Override
+                public Thread newThread(Runnable r) {
+                    return new Thread("falcon-netty-invoke-thread-"+threadNum.incrementAndGet());
+                }
+            });
     public Future doRequest(final FalconRequest request, final Channel channel){
         //后面修改成线程池
         Thread t = new Thread(){
@@ -59,36 +66,6 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     }
                     Object retObj = serviceMethodStructureInfo.getMethod().invoke(serviceMethodStructureInfo.getServiceInstance(),paramters);
                     response.setRetObject(retObj);
-//
-////                    Class[] paramTypes = request.getParameterTypes();
-//                    if(methodName.equals("toString")){
-//                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
-//                        if (provider==null){
-//                            throw new Exception(" provider service("+serviceName+") not found ");
-//                        }
-//                        response.setRetObject(provider.getService().toString());
-//                    }else if(methodName.equals("hashCode")){
-//                        ProviderConfig provider = ServiceProviderManager.getProvider(serviceName);
-//                        if (provider==null){
-//                            throw new Exception(" provider service("+serviceName+") not found ");
-//                        }
-//                        response.setRetObject(provider.getService().hashCode());
-//                    }
-//                    else {
-//                        ServiceMethod serviceMethod = ServiceProviderManager.getServiceMethod(serviceName, methodName,request.getParameterTypeNames());
-//                        if (serviceMethod == null) {
-//                            response.setErrorMsg(" method not found ");
-//                        } else {
-//                            Object o = serviceMethod.invoke(paramters);
-//                            log.info(request+" has success complete ");
-//                            if (o != null && !(o instanceof Serializable)) {
-//                                throw new Exception(o.getClass().getName() + " no serializable ");
-//                            } else {
-//                                response.setRetObject(o);
-//                                log.info(response+" has success complete ");
-//                            }
-//                        }
-//                    }
                 } catch (IllegalAccessException e) {
                     log.error(request + " IllegalAccessException exception :", e);
                     response.setErrorMsg("InvocationTargetException:"+e.getMessage());
@@ -109,7 +86,7 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                 }
             }
         };
-        return threadPool.submit(t);
+        return nettyServerInvokeThreadPool.submit(t);
     }
 
 

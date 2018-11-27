@@ -20,7 +20,7 @@ public class ServerManager {
         serverConfig.setIp(nettyServer.getIp());
 
         jettyServer = new JettyServer(8888,"/");
-        jettyServer.start();;
+        jettyServer.start();
         return serverConfig;
     }
 }
