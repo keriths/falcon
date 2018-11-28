@@ -86,7 +86,7 @@ public class ServiceManager {
         return buffer.substring(0,buffer.length()-1)+")";
     }
 
-    public Object invokeServiceMethod(FalconRequest request,String protocol) throws Exception{
+    public static Object invokeServiceMethod(FalconRequest request,String protocol) throws Exception{
         try {
             String service = request.getServiceInterfaceName();
             String method = request.getServiceMethod();

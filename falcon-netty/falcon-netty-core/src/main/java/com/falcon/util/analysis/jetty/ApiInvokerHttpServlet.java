@@ -35,56 +35,57 @@ public class ApiInvokerHttpServlet extends HttpServlet {
         try {
             String requestBody = getRequestContentString(req);
             FalconRequest requestDTO = JSON.toJavaObject(JSON.parseObject(requestBody), FalconRequest.class);
-            Object obj = process(requestDTO.getServiceInterfaceName(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
+            Object obj = ServiceManager.invokeServiceMethod(requestDTO,"http");// process(requestDTO.getServiceInterfaceName(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
             resp.getWriter().write(JSON.toJSONString(obj));
             resp.flushBuffer();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-    public static Object process(String serviceName,String methodName,String methodParamTypes,Object[] paramValues){
-        ServiceMethodStructureInfo methodStructureInfo = ServiceManager.getServiceMethodStructureInfo(serviceName, methodName, methodParamTypes);
-        Assert.notNull(methodStructureInfo, "not found method " + serviceName + "." + methodName + methodParamTypes);
-        Object serviceInstance = methodStructureInfo.getServiceInstance();
-        Method method = methodStructureInfo.getMethod();
-        Object[] param = getParamObjects(paramValues, methodStructureInfo);
-        try {
-            return method.invoke(serviceInstance,param);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke IllegalAccessException",e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke InvocationTargetException",e);
-        }
-    }
-
-    private static Object[] getParamObjects(Object[] paramValues, ServiceMethodStructureInfo methodStructureInfo) {
-        LinkedHashMap<String, ParamStructure> paramStructureLinkedHashMap = methodStructureInfo.getParamStructureMap();
-        if (CollectionUtils.isEmpty(paramStructureLinkedHashMap)){
-            return null;
-        }
-        Object[] param = new Object[paramStructureLinkedHashMap.size()];
-        int i = 0;
-        for (Map.Entry<String, ParamStructure> entry : paramStructureLinkedHashMap.entrySet()){
-            ParamStructure paramStructure = entry.getValue();
-            String paramName = paramStructure.getParamName();
-            Type type = paramStructure.getParamType();
-            Object value = paramValues[i];
-            param[i] = jsonstrToTypeObject(type, (String)value);
-            i++;
-        }
-        return param;
-    }
-    private static Object jsonstrToTypeObject(Type type, String value) {
-        Object p = null;
-        if (Strings.isNotBlank(value)){
-            if (type instanceof Class && ((Class) type).getName().equals(String.class.getName())){
-                return value;
-            }
-            p = JSON.parseObject(value, type, Feature.values());
-        }
-        return p;
-    }
-
+//
+//    public static Object process(String serviceName,String methodName,String methodParamTypes,Object[] paramValues){
+//        ServiceMethodStructureInfo methodStructureInfo = ServiceManager.getServiceMethodStructureInfo(serviceName, methodName, methodParamTypes);
+//        Assert.notNull(methodStructureInfo, "not found method " + serviceName + "." + methodName + methodParamTypes);
+//        Object serviceInstance = methodStructureInfo.getServiceInstance();
+//        Method method = methodStructureInfo.getMethod();
+//        Object[] param = getParamObjects(paramValues, methodStructureInfo);
+//        try {
+//            return method.invoke(serviceInstance,param);
+//        } catch (IllegalAccessException e) {
+//            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke IllegalAccessException",e);
+//        } catch (InvocationTargetException e) {
+//            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke InvocationTargetException",e);
+//        }
+//    }
+//
+//    private static Object[] getParamObjects(Object[] paramValues, ServiceMethodStructureInfo methodStructureInfo) {
+//        LinkedHashMap<String, ParamStructure> paramStructureLinkedHashMap = methodStructureInfo.getParamStructureMap();
+//        if (CollectionUtils.isEmpty(paramStructureLinkedHashMap)){
+//            return null;
+//        }
+//        Object[] param = new Object[paramStructureLinkedHashMap.size()];
+//        int i = 0;
+//        for (Map.Entry<String, ParamStructure> entry : paramStructureLinkedHashMap.entrySet()){
+//            ParamStructure paramStructure = entry.getValue();
+//            String paramName = paramStructure.getParamName();
+//            Type type = paramStructure.getParamType();
+//            Object value = paramValues[i];
+//            param[i] = jsonstrToTypeObject(type, (String)value);
+//            i++;
+//        }
+//        return param;
+//    }
+//    private static Object jsonstrToTypeObject(Type type, String value) {
+//        Object p = null;
+//        if (Strings.isNotBlank(value)){
+//            if (type instanceof Class && ((Class) type).getName().equals(String.class.getName())){
+//                return value;
+//            }
+//            p = JSON.parseObject(value, type, Feature.values());
+//        }
+//        return p;
+//    }
+//
     private String getRequestContentString(HttpServletRequest req) throws IOException{
         byte[] requestBodyBytes = getRequestContentBytes(req);
         if (requestBodyBytes==null){
@@ -92,7 +93,7 @@ public class ApiInvokerHttpServlet extends HttpServlet {
         }
         return new String(requestBodyBytes);
     }
-
+//
     private byte[] getRequestContentBytes(HttpServletRequest req) throws IOException {
         if (req.getContentLength()==-1){
             return null;

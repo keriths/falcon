@@ -57,15 +57,18 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                 FalconResponse response = new FalconResponse();
                 response.setSequence(request.getSequence());
                 try {
-                    String serviceName = request.getServiceInterfaceName();
-                    String methodName = request.getServiceMethod();
-                    Object[] paramters = request.getParameters();
-                    ServiceMethodStructureInfo serviceMethodStructureInfo = ServiceManager.getServiceMethodStructureInfo(serviceName,methodName,request.getParameterTypeNames());
-                    if (serviceMethodStructureInfo==null){
-                        throw new Exception("");
-                    }
-                    Object retObj = serviceMethodStructureInfo.getMethod().invoke(serviceMethodStructureInfo.getServiceInstance(),paramters);
+                    Object retObj =  ServiceManager.invokeServiceMethod(request,"tcp");
                     response.setRetObject(retObj);
+//
+//                    String serviceName = request.getServiceInterfaceName();
+//                    String methodName = request.getServiceMethod();
+//                    Object[] paramters = request.getParameters();
+//                    ServiceMethodStructureInfo serviceMethodStructureInfo = ServiceManager.getServiceMethodStructureInfo(serviceName,methodName,request.getParameterTypeNames());
+//                    if (serviceMethodStructureInfo==null){
+//                        throw new Exception("");
+//                    }
+//                    Object retObj = serviceMethodStructureInfo.getMethod().invoke(serviceMethodStructureInfo.getServiceInstance(),paramters);
+//                    response.setRetObject(retObj);
                 } catch (IllegalAccessException e) {
                     log.error(request + " IllegalAccessException exception :", e);
                     response.setErrorMsg("InvocationTargetException:"+e.getMessage());

@@ -2,6 +2,7 @@ package com.falcon.server.invoke.handle;
 
 import com.falcon.util.analysis.ServiceMethodStructureInfo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class ServiceInvokeHandleChain{
     public void addServiceInvokeHandle(ServiceInvokeHandle serviceInvokeHandle){
         serviceInvokeHandleList.add(serviceInvokeHandle);
     }
-    public void handleInvokeMethod(InvokeServiceMethodContext invokeServiceMethodContext){
+    public void handleInvokeMethod(InvokeServiceMethodContext invokeServiceMethodContext) throws InvocationTargetException, IllegalAccessException {
         if (hasNext()){
             next().handleInvokeMethod(invokeServiceMethodContext,this);
         }
