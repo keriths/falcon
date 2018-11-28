@@ -1,10 +1,7 @@
 package com.falcon.util.analysis;
 
 import com.falcon.config.ProviderConfig;
-import com.falcon.server.invoke.handle.DoServiceMethodInvokeHandler;
-import com.falcon.server.invoke.handle.InvokeServiceMethodContext;
-import com.falcon.server.invoke.handle.ServiceInvokeHandle;
-import com.falcon.server.invoke.handle.ServiceInvokeHandleChain;
+import com.falcon.server.invoke.handle.*;
 import com.falcon.server.servlet.FalconRequest;
 import com.google.common.collect.Lists;
 import org.springframework.util.Assert;
@@ -94,6 +91,7 @@ public class ServiceManager {
             ServiceMethodStructureInfo methodStructureInfo = ServiceManager.getServiceMethodStructureInfo(service, method, paramTypeNames);
             Assert.notNull(methodStructureInfo, service + "." + method + paramTypeNames + " service not found ");
             ServiceInvokeHandleChain invokeHandleChain = new ServiceInvokeHandleChain();
+            invokeHandleChain.addServiceInvokeHandle(new MethodInvokeLogHandler());
             invokeHandleChain.addServiceInvokeHandle(new DoServiceMethodInvokeHandler());
             InvokeServiceMethodContext invokeServiceMethodContext = new InvokeServiceMethodContext();
             invokeServiceMethodContext.setMethodStructureInfo(methodStructureInfo);

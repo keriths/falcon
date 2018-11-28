@@ -39,7 +39,9 @@ public class ApiInvokerHttpServlet extends HttpServlet {
             resp.getWriter().write(JSON.toJSONString(obj));
             resp.flushBuffer();
         }catch (Exception e){
-            e.printStackTrace();
+            resp.setStatus(500);
+            resp.getWriter().write(JSON.toJSONString(e.getMessage()));
+            resp.flushBuffer();
         }
     }
 //

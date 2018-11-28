@@ -16,6 +16,11 @@ public class HelloWordServiceImpl implements HelloWordService {
     @Override
     @DESC("sayHello方法")
     public String sayHello(@DESC("名称") String name) {
+        try {
+            Thread.sleep(100l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return "hello : "+name;
     }
 

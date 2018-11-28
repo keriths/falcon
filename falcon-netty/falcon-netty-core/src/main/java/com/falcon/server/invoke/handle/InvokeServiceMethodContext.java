@@ -3,12 +3,11 @@ package com.falcon.server.invoke.handle;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.util.analysis.ServiceMethodStructureInfo;
 
-import java.util.Map;
-
 /**
  * Created by fanshuai on 18/11/28.
  */
 public class InvokeServiceMethodContext {
+
     private ServiceMethodStructureInfo methodStructureInfo;
     private FalconRequest falconRequest;
     private String protocol;

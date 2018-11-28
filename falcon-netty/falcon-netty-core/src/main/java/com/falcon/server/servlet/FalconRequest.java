@@ -11,10 +11,9 @@ public class FalconRequest implements Serializable{
     private String serviceInterfaceName;
     private String serviceMethod;
     private Object[] parameters;
-//    private Class[] parameterTypes;
     private String parameterTypeNames;
-    private String paramTypesName;
-    private long sequence = System.currentTimeMillis()*1000+(new Random().nextInt(999));
+
+    private long sequence = System.currentTimeMillis()*10000000000l+(long)(new Random().nextInt(999999999));
 
     public String getServiceInterfaceName() {
         return serviceInterfaceName;
