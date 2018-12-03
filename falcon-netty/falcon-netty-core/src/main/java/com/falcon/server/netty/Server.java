@@ -7,6 +7,19 @@ import java.net.UnknownHostException;
  */
 public interface Server {
 
+    /**
+     * 服务提供者IP
+     */
+    String getIp();
+    /**
+     * 服务提供者端口
+     */
+    int getPort();
+    /**
+     * 协议
+     */
+    String getProtocol();
+
     boolean isStarted();
 
     void start() throws UnknownHostException;

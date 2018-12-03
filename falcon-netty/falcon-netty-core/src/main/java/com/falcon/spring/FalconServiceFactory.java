@@ -2,6 +2,7 @@ package com.falcon.spring;
 
 import com.falcon.client.CustomerConfig;
 import com.falcon.client.CustomerManager;
+import com.falcon.server.ServerManager;
 import com.falcon.server.servlet.FalconRequest;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,6 +19,7 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
     private String domain;
     private Class serviceInterface;
     private String group = "default";
+    private String protocol = ServerManager.TCP;
     private CustomerConfig customerConfig ;
     private long timeOut = 3000;
     @Override
@@ -32,6 +34,7 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
         customerConfig.setServiceInterface(serviceInterface);
         customerConfig.setGroup(group);
         customerConfig.setTimeout(timeOut);
+        customerConfig.setProtocol(protocol);
         CustomerManager.addCustomer(customerConfig);
     }
 
@@ -104,5 +107,13 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
 
     public void setTimeOut(long timeOut) {
         this.timeOut = timeOut;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 }

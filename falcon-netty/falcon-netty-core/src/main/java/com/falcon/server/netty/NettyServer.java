@@ -1,5 +1,6 @@
 package com.falcon.server.netty;
 
+import com.falcon.server.ServerManager;
 import com.falcon.util.NetTools;
 import lombok.Data;
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -22,6 +23,10 @@ import java.util.concurrent.Executors;
  * Created by fanshuai on 15-1-23.
  */
 public class NettyServer implements Server {
+    /**
+     * 服务提供者端口
+     */
+    private int port;
     private static Object startLock = new Object();
     public int acturyPort;
     private Channel channel;
@@ -43,7 +48,7 @@ public class NettyServer implements Server {
                 return ;
             }
             ip = NetTools.getFirstLocalIp();
-            int port = NetTools.getAvailablePort(acturyPort);
+            port = NetTools.getAvailablePort(acturyPort);
             InetSocketAddress address = new InetSocketAddress(port);
             acturyPort = port;
             ServerBootstrap serverBootstrap = new ServerBootstrap(
@@ -93,9 +98,16 @@ public class NettyServer implements Server {
         return ip;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    @Override
+    public int getPort() {
+        return port;
     }
+
+    @Override
+    public String getProtocol() {
+        return ServerManager.TCP;
+    }
+
 
 
 

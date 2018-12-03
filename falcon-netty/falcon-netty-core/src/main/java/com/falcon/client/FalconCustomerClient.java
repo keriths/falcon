@@ -1,5 +1,6 @@
 package com.falcon.client;
 
+import com.falcon.server.ServerManager;
 import com.falcon.server.netty.NettyClient;
 import com.falcon.server.servlet.FalconRequest;
 
@@ -10,11 +11,19 @@ public class FalconCustomerClient {
     private NettyClient client;
     private String host;
     private int port;
-    public FalconCustomerClient(String host,int port){
+    private String protocol;
+    public FalconCustomerClient(String host,int port,String protocol){
+        this.protocol = protocol;
         this.host = host;
         this.port = port;
-        client = new NettyClient(host,port);
-        client.connect();
+        if (ServerManager.TCP.equals(protocol)){
+            client = new NettyClient(host,port);
+            client.connect();
+        }else if (ServerManager.HTTP.equals(protocol)){
+
+        }else {
+            throw new RuntimeException(protocol+" client not found");
+        }
     }
 
     public boolean isConnected(){

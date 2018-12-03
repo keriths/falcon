@@ -1,5 +1,6 @@
 package com.falcon.config;
 
+import com.falcon.server.ServerManager;
 import lombok.Data;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
  */
 @Data
 public class ProviderConfig<T> {
+    private String protocol = ServerManager.TCP;
     /**
      * 服务api接口
      */

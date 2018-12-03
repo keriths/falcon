@@ -4,6 +4,8 @@ import com.falcon.config.ProviderConfig;
 import com.falcon.exception.ServiceContainerInitException;
 import com.falcon.regist.ServiceRegistManager;
 import com.falcon.server.method.ServiceMethod;
+import com.falcon.util.analysis.ServiceManager;
+import com.falcon.util.analysis.ServiceStructureInfo;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -27,10 +29,15 @@ public class ServiceProviderManager {
     }
 
     public static void registService() throws Exception {
-        for(Map.Entry<String,ProviderConfig> entry:serviceProviderCache.entrySet()){
-            ProviderConfig providerConfig = entry.getValue();
-            ServiceRegistManager.registService(providerConfig);
+        List<String> serviceNames = ServiceManager.getServiceNames();
+        for (String service : serviceNames){
+            ServiceStructureInfo serviceStructureInfo = ServiceManager.getServiceStructureInfo(service);
+            ServiceRegistManager.registService(serviceStructureInfo);
         }
+//        for(Map.Entry<String,ProviderConfig> entry:serviceProviderCache.entrySet()){
+//            ProviderConfig providerConfig = entry.getValue();
+//            ServiceRegistManager.registService(providerConfig);
+//        }
     }
     public static void addServiceProvider(List<ProviderConfig> providerConfigList) throws Exception {
         if(providerConfigList==null || providerConfigList.isEmpty()){

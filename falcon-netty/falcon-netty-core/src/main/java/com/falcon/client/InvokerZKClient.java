@@ -40,8 +40,8 @@ public class InvokerZKClient {
         }
     }
 
-    public List<ProviderZKNodeConfig> getProviders(String domain,String interfaceName) throws Exception {
-        String parentNode = ServiceRegistManager.getServiceProvidersPathNode(domain,interfaceName);
+    public List<ProviderZKNodeConfig> getProviders(String domain,String interfaceName,String protocol) throws Exception {
+        String parentNode = ServiceRegistManager.getServiceProvidersPathNode(domain,interfaceName,protocol);
         List<String> childrenNodes = curatorFramework.getChildren().watched().forPath(parentNode);
         if(childrenNodes==null || childrenNodes.isEmpty()){
             return null;
@@ -68,9 +68,10 @@ public class InvokerZKClient {
                     int startPos = parentPath.indexOf("/falcon/Server/")+"/falcon/Server/".length();
                     int endPos = parentPath.indexOf("/providers");
                     String[] serviceNames = parentPath.substring(startPos,endPos).split("/");
+                    String protocol = parentPath.substring(endPos + 11).split("/")[0];
                     String domain = serviceNames[0];
                     String serviceName=serviceNames[1];
-                    CustomerManager.initCustomerAllClient(domain,serviceName);
+                    CustomerManager.initCustomerAllClient(domain,serviceName,protocol);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
@@ -81,11 +82,13 @@ public class InvokerZKClient {
                     ///falcon/Server/falcon_netty_demo_provider/com.falcon.demo.api.HelloWordService/providers
                     int startPos = parentPath.indexOf("/falcon/Server/")+"/falcon/Server/".length();
                     int endPos = parentPath.indexOf("/providers");
-                    String[] providerHosts = parentPath.substring(endPos+11).split(":");
+                    String protocol = parentPath.substring(endPos + 11).split("/")[0];
+                    String hostAndPort = parentPath.substring(endPos + 11).split("/")[1];
+                    String[] providerHosts = hostAndPort.split(":");
                     String[] serviceNames = parentPath.substring(startPos,endPos).split("/");
                     String domain = serviceNames[0];
                     String serviceName=serviceNames[1];
-                    CustomerManager.removeCustomerClient(domain,serviceName,providerHosts[0],Integer.decode(providerHosts[1]));
+                    CustomerManager.removeCustomerClient(domain,serviceName,protocol,providerHosts[0],Integer.decode(providerHosts[1]));
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
@@ -113,7 +116,7 @@ public class InvokerZKClient {
             }else if(connectionState == ConnectionState.RECONNECTED){
                 //重新取客户端链接
                 try {
-
+                    //ServiceProviderManager.registService();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

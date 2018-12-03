@@ -2,6 +2,7 @@ package com.falcon.server.invoke.handle;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
+import com.falcon.server.ServerManager;
 import com.falcon.util.analysis.ParamStructure;
 import com.falcon.util.analysis.ServiceMethodStructureInfo;
 import org.apache.logging.log4j.util.Strings;
@@ -25,7 +26,7 @@ public class DoServiceMethodInvokeHandler implements ServiceInvokeHandle{
     }
 
     private Object[] getParams(InvokeServiceMethodContext invokeServiceMethodContext) {
-        if ("http".equals(invokeServiceMethodContext.getProtocol())){
+        if (ServerManager.HTTP.equals(invokeServiceMethodContext.getProtocol())){
             return getParamObjects(invokeServiceMethodContext.getFalconRequest().getParameters(),invokeServiceMethodContext.getMethodStructureInfo());
         }
         return invokeServiceMethodContext.getFalconRequest().getParameters();

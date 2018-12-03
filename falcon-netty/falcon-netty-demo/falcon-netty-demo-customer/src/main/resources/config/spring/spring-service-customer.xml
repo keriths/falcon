@@ -14,6 +14,7 @@
     <bean id="helloWordService" class="com.falcon.spring.FalconServiceFactory" lazy-init="false">
         <property name="domain" value="falcon_netty_demo_provider"/>
         <property name="serviceInterface" value="com.falcon.demo.api.HelloWordService"/>
+        <property name="protocol" value="HTTP"/>
         <property name="timeOut" value="60000" />
     </bean>
 </beans>

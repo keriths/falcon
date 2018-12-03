@@ -2,6 +2,7 @@ package com.falcon.util.analysis.jetty;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
+import com.falcon.server.ServerManager;
 import com.falcon.server.servlet.FalconRequest;
 import com.falcon.util.analysis.ParamStructure;
 import com.falcon.util.analysis.RequestDTO;
@@ -35,7 +36,7 @@ public class ApiInvokerHttpServlet extends HttpServlet {
         try {
             String requestBody = getRequestContentString(req);
             FalconRequest requestDTO = JSON.toJavaObject(JSON.parseObject(requestBody), FalconRequest.class);
-            Object obj = ServiceManager.invokeServiceMethod(requestDTO,"http");// process(requestDTO.getServiceInterfaceName(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
+            Object obj = ServiceManager.invokeServiceMethod(requestDTO, ServerManager.HTTP);// process(requestDTO.getServiceInterfaceName(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
             resp.getWriter().write(JSON.toJSONString(obj));
             resp.flushBuffer();
         }catch (Exception e){

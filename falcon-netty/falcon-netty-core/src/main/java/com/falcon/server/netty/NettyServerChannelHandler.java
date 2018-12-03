@@ -2,6 +2,7 @@ package com.falcon.server.netty;
 
 import com.caucho.hessian.io.Hessian2Output;
 import com.falcon.config.ProviderConfig;
+import com.falcon.server.ServerManager;
 import com.falcon.server.ServiceProviderManager;
 import com.falcon.server.method.ServiceMethod;
 import com.falcon.server.servlet.FalconRequest;
@@ -57,7 +58,7 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                 FalconResponse response = new FalconResponse();
                 response.setSequence(request.getSequence());
                 try {
-                    Object retObj =  ServiceManager.invokeServiceMethod(request,"tcp");
+                    Object retObj =  ServiceManager.invokeServiceMethod(request, ServerManager.TCP);
                     response.setRetObject(retObj);
 //
 //                    String serviceName = request.getServiceInterfaceName();
