@@ -41,13 +41,14 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
             doRequest(request, ctx.getChannel());
         }
     }
+//    ExecutorService nettyServerInvokeThreadPools = Executors.newFixedThreadPool(10);
     ExecutorService nettyServerInvokeThreadPool = new ThreadPoolExecutor(100, 500, 0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(1000),
             new ThreadFactory() {
                 AtomicInteger threadNum = new AtomicInteger(0);
                 @Override
                 public Thread newThread(Runnable r) {
-                    return new Thread("falcon-netty-invoke-thread-"+threadNum.incrementAndGet());
+                    return new Thread(r,"falcon-netty-invoke-thread-"+threadNum.incrementAndGet());
                 }
             });
     public Future doRequest(final FalconRequest request, final Channel channel){
@@ -55,6 +56,7 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
         Thread t = new Thread(){
             @Override
             public void run() {
+                System.out.println("**********************************");
                 FalconResponse response = new FalconResponse();
                 response.setSequence(request.getSequence());
                 try {

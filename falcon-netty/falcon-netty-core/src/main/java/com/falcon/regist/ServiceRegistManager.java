@@ -5,6 +5,7 @@ import com.falcon.config.ProviderConfig;
 import com.falcon.config.ProviderZKNodeConfig;
 import com.falcon.server.ServerManager;
 import com.falcon.server.netty.Server;
+import com.falcon.util.AppDomainNameUtils;
 import com.falcon.util.analysis.ServiceStructureInfo;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -88,7 +89,7 @@ public class ServiceRegistManager {
     }
 
     public static void registService(ServiceStructureInfo serviceStructureInfo)throws Exception{
-        String domain = "test";
+        String domain = AppDomainNameUtils.getDomainName();
         String group = "default";
         String serviceName = serviceStructureInfo.getServiceId();
         List<Server> servers = ServerManager.enableServers();
