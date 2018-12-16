@@ -1,6 +1,7 @@
 package com.falcon.server.netty;
 
 import com.falcon.client.CustomerManager;
+import com.falcon.client.InvokeClient;
 import com.falcon.client.InvokerContext;
 import com.falcon.server.servlet.FalconRequest;
 import org.jboss.netty.bootstrap.ClientBootstrap;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by fanshuai on 15-2-10.
  */
-public class NettyClient  {
+public class NettyClient  implements InvokeClient{
     private final static Logger log = LoggerFactory.getLogger(NettyClient.class);
     private ClientBootstrap bootstrap;
     private String ip ;
@@ -44,6 +45,7 @@ public class NettyClient  {
         bootstrap.setOption("tcpNoDelay", true);
         bootstrap.setOption("keepAlive", true);
         bootstrap.setOption("reuseAddress", true);
+        connect();
     }
     public synchronized void connect() {
 
@@ -74,7 +76,7 @@ public class NettyClient  {
         return channel.isConnected();
     }
 
-    public void write(final FalconRequest request){
+    private void write(final FalconRequest request){
         log.info(request+" channel write ");
         ChannelFuture future  = channel.write(request);
         future.addListener(new ChannelFutureListener(){
@@ -101,5 +103,11 @@ public class NettyClient  {
             bootstrap = null;
         }
 
+    }
+
+    @Override
+    public Object doRequest(FalconRequest request, InvokerContext invokerContext) {
+        write(request);
+        return null;
     }
 }

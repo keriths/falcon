@@ -19,10 +19,10 @@ public class InvokerCallBack {
     public void processResponse(FalconResponse response){
         synchronized (this){
             returnObject = response.getRetObject();
-            if(response.getThrowable()!=null){
-                this.throwable = response.getThrowable();
-                hasError = true;
-            }
+//            if(response.getThrowable()!=null){
+//                this.throwable = response.getThrowable();
+//                hasError = true;
+//            }
             if(response.getErrorMsg()!=null){
                 this.throwable = new Exception(response.getErrorMsg());
                 hasError = true;

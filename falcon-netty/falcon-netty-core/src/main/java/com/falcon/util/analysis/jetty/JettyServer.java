@@ -72,6 +72,7 @@ public class JettyServer implements Server {
         }
         context.addServlet(ApiInvokerHttpServlet.class, "/api/invoke");
         context.addServlet(ApiDocJettyServlet.class, "/api/doc/services");
+        context.addServlet(ApiInvokerHttpForJavaServlet.class,"/api/javainvoke");
 //        context.addServlet(ServiceMethodsJettyServlet.class, "/api/doc/services");
         context.addFilter(JettyDefaultFilter.class, "/*", EnumSet.copyOf(Lists.newArrayList(DispatcherType.ASYNC)));
     }

@@ -122,7 +122,7 @@ public class CustomerManager {
         int index = randomIndex(clients.size());
         FalconCustomerClient c = clients.get(index);
         if (!c.isConnected()){
-            c.connect();
+//            c.connect();
         }
         while (!c.isConnected()){
             clients.remove(c);

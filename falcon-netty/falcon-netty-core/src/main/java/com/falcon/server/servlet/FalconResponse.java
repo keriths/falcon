@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by fanshuai on 15-2-10.
  */
 public class FalconResponse implements Serializable{
-    private Throwable throwable;
+//    private Throwable throwable;
     private long sequence;
     private Object retObject;
     private String errorMsg;
@@ -33,9 +33,9 @@ public class FalconResponse implements Serializable{
         this.retObject = retObject;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
-    }
+//    public Throwable getThrowable() {
+//        return throwable;
+//    }
 
     public String getErrorMsg() {
         return errorMsg;
@@ -44,6 +44,22 @@ public class FalconResponse implements Serializable{
     public void setErrorMsg(String errorMsg) {
         invokeEndTime = DateUtils.getCurTimeStamp();
         this.errorMsg = errorMsg;
+    }
+
+    public long getInvokeStartTime() {
+        return invokeStartTime;
+    }
+
+    public void setInvokeStartTime(long invokeStartTime) {
+        this.invokeStartTime = invokeStartTime;
+    }
+
+    public long getInvokeEndTime() {
+        return invokeEndTime;
+    }
+
+    public void setInvokeEndTime(long invokeEndTime) {
+        this.invokeEndTime = invokeEndTime;
     }
 
     @Override

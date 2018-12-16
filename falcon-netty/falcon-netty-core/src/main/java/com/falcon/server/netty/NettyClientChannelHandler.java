@@ -25,7 +25,7 @@ public class NettyClientChannelHandler extends SimpleChannelUpstreamHandler {
         }
         for(FalconResponse response:responses){
             long seq = response.getSequence();
-            InvokerContext context=CustomerManager.requestIng.get(seq);
+            InvokerContext context = CustomerManager.requestIng.get(seq);
             context.getCallBack().processResponse(response);
             CustomerManager.requestIng.remove(seq);
         }

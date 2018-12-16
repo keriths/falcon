@@ -8,7 +8,7 @@ import com.falcon.server.servlet.FalconRequest;
  * Created by fanshuai on 15-2-11.
  */
 public class FalconCustomerClient {
-    private NettyClient client;
+    private InvokeClient client;
     private String host;
     private int port;
     private String protocol;
@@ -18,9 +18,8 @@ public class FalconCustomerClient {
         this.port = port;
         if (ServerManager.TCP.equals(protocol)){
             client = new NettyClient(host,port);
-            client.connect();
         }else if (ServerManager.HTTP.equals(protocol)){
-
+            client = new HTTPInvokeClient(host,port);
         }else {
             throw new RuntimeException(protocol+" client not found");
         }
@@ -30,13 +29,13 @@ public class FalconCustomerClient {
        return client.isConnected();
     }
 
-    public boolean connect(){
-        client.connect();
-        return client.isConnected();
-    }
+//    public boolean connect(){
+//        client.connect();
+//        return client.isConnected();
+//    }
 
     public void doRequest(FalconRequest request, InvokerContext invokerContext) {
-        client.write(request);
+        client.doRequest(request,invokerContext);
     }
 
     public String getHost() {
