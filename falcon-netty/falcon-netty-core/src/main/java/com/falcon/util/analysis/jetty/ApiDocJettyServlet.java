@@ -1,8 +1,6 @@
 package com.falcon.util.analysis.jetty;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.falcon.api.doc.ApiDescManager;
 import com.falcon.util.analysis.ServiceManager;
 import com.falcon.util.analysis.ServiceStructureInfo;
 
@@ -11,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+//import freemarker.template.Template;
 
 /**
  * Created by fanshuai on 18/9/27.
@@ -35,7 +34,7 @@ public class ApiDocJettyServlet extends HttpServlet {
             resp.getWriter().write(JSON.toJSONString(ServiceManager.getServiceStructureInfo(serviceKey)));
             return;
         }
-        resp.getWriter().write(JSON.toJSONString(ServiceManager.getServiceNames()));
+        resp.getWriter().write(JSON.toJSONString(ServiceManager.getServiceStructureInfoMap().values()));
         return;
     }
     @Override

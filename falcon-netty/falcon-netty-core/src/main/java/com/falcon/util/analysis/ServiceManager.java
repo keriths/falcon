@@ -15,6 +15,9 @@ import java.util.Map;
 public class ServiceManager {
     private static Map<String,ServiceStructureInfo> serviceStructureInfoMap = new HashMap<String, ServiceStructureInfo>();
 
+    public static Map<String,ServiceStructureInfo> getServiceStructureInfoMap(){
+        return serviceStructureInfoMap;
+    }
     /**
      * 解析一个服务
      * @param serviceInstance
