@@ -27,7 +27,7 @@ public class ServiceContainer implements Serializable{
     @Setter
     private int port = 1155;
     @Setter
-    private Map<Class,Object> serviceProviders;
+    private Map<String,Object> serviceProviders;
 
     public void init() throws Exception {
         if(domain==null){
@@ -39,9 +39,10 @@ public class ServiceContainer implements Serializable{
         ServerConfig serverConfig = new ServerConfig();
         serverConfig.setPort(port);
         List<ProviderConfig> providerConfigList = new ArrayList<ProviderConfig>();
-        for(Map.Entry<Class,Object> entry : serviceProviders.entrySet()){
+        for(Map.Entry<String,Object> entry : serviceProviders.entrySet()){
             ProviderConfig providerConfig = new ProviderConfig();
-            providerConfig.setServiceInterface(entry.getKey());
+//            providerConfig.setServiceInterface(entry.getKey());
+            providerConfig.setServiceId(entry.getKey());
             providerConfig.setService(entry.getValue());
             providerConfig.setGroup(group);
             providerConfig.setDomain(domain);

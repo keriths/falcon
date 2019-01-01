@@ -1,8 +1,10 @@
 package com.falcon.demo.provider;
 
 import com.falcon.demo.api.HelloWordService;
+import com.falcon.demo.api.HelloWordService2;
 import com.falcon.demo.api.dto.HelloDTO;
 import com.falcon.util.analysis.annotation.DESC;
+import com.falcon.util.analysis.annotation.ServiceID;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,7 +14,8 @@ import java.util.List;
  * Created by fanshuai on 15/4/7.
  */
 @DESC("helloWord测试服务")
-public class HelloWordServiceImpl implements HelloWordService {
+@ServiceID("测试服务")
+public class HelloWordServiceImpl implements HelloWordService,HelloWordService2 {
     @Override
     @DESC("sayHello方法")
     public String sayHello(@DESC("名称") String name) {

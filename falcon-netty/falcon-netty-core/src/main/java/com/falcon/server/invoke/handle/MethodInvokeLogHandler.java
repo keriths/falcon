@@ -13,7 +13,7 @@ public class MethodInvokeLogHandler implements ServiceInvokeHandle{
         invokeHandleChain.handleInvokeMethod(invokeServiceMethodContext);
         long t2 = System.currentTimeMillis();
         try {
-            System.out.println("invoke "+invokeServiceMethodContext.getFalconRequest().getServiceInterfaceName()+"."+invokeServiceMethodContext.getFalconRequest().getServiceMethod()+invokeServiceMethodContext.getFalconRequest().getParameterTypeNames()+" 用时"+(t2-t1)+"毫秒");
+            System.out.println("invoke "+invokeServiceMethodContext.getFalconRequest().getServiceId()+"."+invokeServiceMethodContext.getFalconRequest().getMethodId()+" 用时"+(t2-t1)+"毫秒");
         }catch (Exception e){
             System.out.println("exception");
         }

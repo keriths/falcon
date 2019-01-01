@@ -39,29 +39,29 @@ public class ServiceProviderManager {
 //            ServiceRegistManager.registService(providerConfig);
 //        }
     }
-    public static void addServiceProvider(List<ProviderConfig> providerConfigList) throws Exception {
-        if(providerConfigList==null || providerConfigList.isEmpty()){
-            return;
-        }
-        for(ProviderConfig providerConfig:providerConfigList) {
-            addServiceProvider(providerConfig);
-        }
-    }
-    public static void addServiceProvider(ProviderConfig providerConfig) throws Exception {
-        Class serviceInterface = providerConfig.getServiceInterface();
-        if(serviceProviderCache.containsKey(serviceInterface.getName())){
-            throw new ServiceContainerInitException(serviceInterface.getName()+" has init again");
-        }
-        Method[] methodArray = serviceInterface.getMethods();
-        for(Method method:methodArray){
-            if(!ignoreMethods.contains(method.getName())){
-                ServiceMethod serviceMethod = new ServiceMethod(providerConfig.getService(),method);
-                String key = getKey(providerConfig.getServiceInterface().getName(),method.getName(),serviceMethod.getParamNamesStr());
-                serviceMethodCache.put(key,serviceMethod);
-            }
-        }
-        serviceProviderCache.put(serviceInterface.getName(),providerConfig);
-    }
+//    public static void addServiceProvider(List<ProviderConfig> providerConfigList) throws Exception {
+//        if(providerConfigList==null || providerConfigList.isEmpty()){
+//            return;
+//        }
+//        for(ProviderConfig providerConfig:providerConfigList) {
+//            addServiceProvider(providerConfig);
+//        }
+//    }
+//    public static void addServiceProvider(ProviderConfig providerConfig) throws Exception {
+//        Class serviceInterface = providerConfig.getServiceInterface();
+//        if(serviceProviderCache.containsKey(serviceInterface.getName())){
+//            throw new ServiceContainerInitException(serviceInterface.getName()+" has init again");
+//        }
+//        Method[] methodArray = serviceInterface.getMethods();
+//        for(Method method:methodArray){
+//            if(!ignoreMethods.contains(method.getName())){
+//                ServiceMethod serviceMethod = new ServiceMethod(providerConfig.getService(),method);
+//                String key = getKey(providerConfig.getServiceInterface().getName(),method.getName(),serviceMethod.getParamNamesStr());
+//                serviceMethodCache.put(key,serviceMethod);
+//            }
+//        }
+//        serviceProviderCache.put(serviceInterface.getName(),providerConfig);
+//    }
     private static String getKey(String serviceName,String methodName,String paramNamesStr){
         return serviceName+"#"+methodName+"#"+paramNamesStr;
     }

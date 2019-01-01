@@ -28,7 +28,7 @@ public class CustomerManager {
     }
     public static void addCustomer(CustomerConfig customerConfig) throws Exception {
         customerConfigList.add(customerConfig);
-        initCustomerAllClient(customerConfig.getDomain(),customerConfig.getServiceInterface().getName(),customerConfig.getProtocol());
+        initCustomerAllClient(customerConfig.getDomain(),customerConfig.getServiceId(),customerConfig.getProtocol());
     }
 
     public static void initCustomerAllClient(String domain,String serviceInterfaceName,String protocol) throws Exception{
@@ -92,7 +92,7 @@ public class CustomerManager {
     }
 
     private static FalconCustomerClient getClient(CustomerConfig customerConfig) throws Exception {
-        String key = getServiceClientsMapKey(customerConfig.getDomain(), customerConfig.getServiceInterface().getName(),customerConfig.getProtocol());
+        String key = getServiceClientsMapKey(customerConfig.getDomain(), customerConfig.getServiceId(),customerConfig.getProtocol());
         FalconCustomerClient client;
         String assignClient = FalconAssignTools.getProperty(key);
         System.out.println(assignClient);
@@ -111,13 +111,13 @@ public class CustomerManager {
             }
             return client;
         }catch (Exception e){
-            throw new Exception("service provider ["+key+"] "+e.getMessage(),e);
+            throw new Exception("serviceId provider ["+key+"] "+e.getMessage(),e);
         }
     }
 
     private static FalconCustomerClient selectClient(CustomerConfig customerConfig,List<FalconCustomerClient> clients) throws Exception {
         if(clients==null || clients.isEmpty()){
-            throw new Exception("service provider not fund client");
+            throw new Exception("serviceId provider not fund client");
         }
         int index = randomIndex(clients.size());
         FalconCustomerClient c = clients.get(index);
@@ -134,7 +134,7 @@ public class CustomerManager {
         if(c.isConnected()){
             return c;
         }else {
-            throw new Exception(" no available provier exists for service ["+customerConfig.getCustomerInfo()+"]");
+            throw new Exception(" no available provier exists for serviceId ["+customerConfig.getCustomerInfo()+"]");
         }
     }
     private static int randomIndex(int size){

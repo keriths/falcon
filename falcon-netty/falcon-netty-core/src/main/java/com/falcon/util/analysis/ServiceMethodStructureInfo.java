@@ -38,10 +38,10 @@ public class ServiceMethodStructureInfo implements Serializable{
      * 方法名称
      */
     private String methodName;
-    /**
-     * 方法参数列表
-     */
-    private String paramTypes;
+//    /**
+//     * 方法参数列表
+//     */
+//    private String paramTypes;
     /**
      * 具体方法
      */
@@ -149,11 +149,11 @@ public class ServiceMethodStructureInfo implements Serializable{
         this.serviceInstance = serviceInstance;
     }
 
-    public String getParamTypes() {
-        return paramTypes;
-    }
-
-    public void setParamTypes(String paramTypes) {
-        this.paramTypes = paramTypes;
-    }
+//    public String getParamTypes() {
+//        return paramTypes;
+//    }
+//
+//    public void setParamTypes(String paramTypes) {
+//        this.paramTypes = paramTypes;
+//    }
 }

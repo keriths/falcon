@@ -6,7 +6,6 @@ import com.falcon.server.servlet.FalconRequest;
 import com.google.common.collect.Lists;
 import org.springframework.util.Assert;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -40,12 +39,21 @@ public class ServiceManager {
      * @param methodParamTypes
      * @return
      */
+    @Deprecated
     public static ServiceMethodStructureInfo getServiceMethodStructureInfo(String serviceName,String methodName,String methodParamTypes) {
         ServiceStructureInfo serviceStructureInfo = serviceStructureInfoMap.get(serviceName);
         if (serviceStructureInfo==null){
             return null;
         }
         return serviceStructureInfo.getServiceMethodStructureInfo(methodName,methodParamTypes);
+    }
+
+    public static ServiceMethodStructureInfo getServiceMethodStructureInfo(String serviceName,String methodId) {
+        ServiceStructureInfo serviceStructureInfo = serviceStructureInfoMap.get(serviceName);
+        if (serviceStructureInfo==null){
+            return null;
+        }
+        return serviceStructureInfo.getServiceMethodStructureInfo(methodId);
     }
 
     /**
@@ -71,8 +79,12 @@ public class ServiceManager {
             return;
         }
         for (ProviderConfig providerConfig:providerConfigList){
-            analysisService(providerConfig.getServiceInterface().getName(),providerConfig.getService());
+            analysisService(providerConfig.getServiceId(),providerConfig.getService());
         }
+    }
+
+    public static String getFullMethodName(Method method){
+        return method.getName()+getMethodParamTypeString(method.getParameterTypes());
     }
 
     public static String getMethodParamTypeString(Class[] paramClasses) {
@@ -88,11 +100,11 @@ public class ServiceManager {
 
     public static Object invokeServiceMethod(FalconRequest request,String protocol) throws Exception{
         try {
-            String service = request.getServiceInterfaceName();
-            String method = request.getServiceMethod();
-            String paramTypeNames = request.getParameterTypeNames();
-            ServiceMethodStructureInfo methodStructureInfo = ServiceManager.getServiceMethodStructureInfo(service, method, paramTypeNames);
-            Assert.notNull(methodStructureInfo, service + "." + method + paramTypeNames + " service not found ");
+            String service = request.getServiceId();
+            String methodId = request.getMethodId();
+//            String paramTypeNames = request.getParameterTypeNames();
+            ServiceMethodStructureInfo methodStructureInfo = ServiceManager.getServiceMethodStructureInfo(service, methodId);
+            Assert.notNull(methodStructureInfo, service + "." + methodId + " serviceId not found ");
             ServiceInvokeHandleChain invokeHandleChain = new ServiceInvokeHandleChain();
             invokeHandleChain.addServiceInvokeHandle(new MethodInvokeLogHandler());
             invokeHandleChain.addServiceInvokeHandle(new DoServiceMethodInvokeHandler());

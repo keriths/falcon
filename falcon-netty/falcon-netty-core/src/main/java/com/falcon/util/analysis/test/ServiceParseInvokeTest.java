@@ -56,7 +56,8 @@ public class ServiceParseInvokeTest {
         requestDTO.setServiceAppKey("TestDomain");
         requestDTO.setServiceName(TestService.class.getName());
         requestDTO.setMethodName("maplist");
-        requestDTO.setParamTypeNames("(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)");
+//        requestDTO.setParamTypeNames("(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)");
+        requestDTO.setMethodId("maplist(java.util.List,java.lang.String,int,long,java.math.BigDecimal,java.lang.Long,java.util.Date)");
         requestDTO.setParamValues(new Object[]{"[{\"name\":\"nameisshuai\",\"aaa\":[\"1\"]}]","stringisaaa","111","222","333.333","3434","1542728084138"});
         Object obj = process(requestDTO);
         System.out.println(JSON.toJSONString(obj));
@@ -68,26 +69,26 @@ public class ServiceParseInvokeTest {
     }
 
     public static Object process(RequestDTO requestDTO){
-        Object o = process(requestDTO.getServiceName(),requestDTO.getMethodName(),requestDTO.getParamTypeNames(),requestDTO.getParamValues());
+        Object o = process(requestDTO.getServiceName(),requestDTO.getMethodId(),requestDTO.getParamValues());
         return o;
     }
     public static Object process(FalconRequest falconRequest){
-        Object o = process(falconRequest.getServiceInterfaceName(),falconRequest.getServiceMethod(),falconRequest.getParameterTypeNames(),falconRequest.getParameters());
+        Object o = process(falconRequest.getServiceId(),falconRequest.getMethodId(),falconRequest.getParameters());
         return o;
     }
 
-    public static Object process(String serviceName,String methodName,String methodParamTypes,Object[] paramValues){
-        ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(serviceName,methodName,methodParamTypes);
-        Assert.notNull(methodStructureInfo,"not found method "+serviceName+"."+methodName+methodParamTypes);
+    public static Object process(String serviceName,String methodId,Object[] paramValues){
+        ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(serviceName,methodId);
+        Assert.notNull(methodStructureInfo,"not found method "+serviceName+"."+methodId);
         Object serviceInstance = methodStructureInfo.getServiceInstance();
         Method method = methodStructureInfo.getMethod();
         Object[] param = getParamObjects(paramValues, methodStructureInfo);
         try {
             return method.invoke(serviceInstance,param);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke IllegalAccessException",e);
+            throw new RuntimeException(serviceName+"."+methodId+" on invoke IllegalAccessException",e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(serviceName+"."+methodName+methodParamTypes+" on invoke InvocationTargetException",e);
+            throw new RuntimeException(serviceName+"."+methodId+" on invoke InvocationTargetException",e);
         }
 
     }
@@ -109,42 +110,42 @@ public class ServiceParseInvokeTest {
         return param;
     }
 
-    public static Object process(String className,String methodName,Map<String,String> params){
-        ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(className,methodName);
-        Assert.notNull(methodName,"not found method "+className+"."+methodName);
-        Object serviceInstance = methodStructureInfo.getServiceInstance();
-        Method method = methodStructureInfo.getMethod();
-        Object[] param = getParamObjects(params, methodStructureInfo);
-        try {
-            return method.invoke(serviceInstance,param);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(className+"."+methodName+" on invoke IllegalAccessException",e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(className+"."+methodName+" on invoke InvocationTargetException",e);
-        }
-    }
+//    public static Object process(String className,String methodName,Map<String,String> params){
+//        ServiceMethodStructureInfo methodStructureInfo = getServiceMethodStructureInfo(className,methodName);
+//        Assert.notNull(methodName,"not found method "+className+"."+methodName);
+//        Object serviceInstance = methodStructureInfo.getServiceInstance();
+//        Method method = methodStructureInfo.getMethod();
+//        Object[] param = getParamObjects(params, methodStructureInfo);
+//        try {
+//            return method.invoke(serviceInstance,param);
+//        } catch (IllegalAccessException e) {
+//            throw new RuntimeException(className+"."+methodName+" on invoke IllegalAccessException",e);
+//        } catch (InvocationTargetException e) {
+//            throw new RuntimeException(className+"."+methodName+" on invoke InvocationTargetException",e);
+//        }
+//    }
 
-    private static ServiceMethodStructureInfo getServiceMethodStructureInfo(String serviceName,String methodName,String methodParamTypes) {
+    private static ServiceMethodStructureInfo getServiceMethodStructureInfo(String serviceName,String methodId) {
         ServiceStructureInfo serviceStructureInfo = serviceMethodStructureInfoMap.get(serviceName);
         List<ServiceMethodStructureInfo> methodStructureInfos = serviceStructureInfo.getServiceMethodStructureInfos();
         for (ServiceMethodStructureInfo methodStructureInfo : methodStructureInfos){
-            if (methodName.equals(methodStructureInfo.getMethodName()) && methodParamTypes.equals(methodStructureInfo.getParamTypes())){
+            if (methodStructureInfo.getMethodId().equals(methodId)){
                 return methodStructureInfo;
             }
         }
         return null;
     }
 
-    private static ServiceMethodStructureInfo getServiceMethodStructureInfo(String className, String methodName) {
-        ServiceStructureInfo serviceStructureInfo = serviceMethodStructureInfoMap.get(className);
-        List<ServiceMethodStructureInfo> methodStructureInfos = serviceStructureInfo.getServiceMethodStructureInfos();
-        for (ServiceMethodStructureInfo methodStructureInfo : methodStructureInfos){
-            if (methodName.equals(methodStructureInfo.getMethodName())){
-                return methodStructureInfo;
-            }
-        }
-        return null;
-    }
+//    private static ServiceMethodStructureInfo getServiceMethodStructureInfo(String className, String methodName) {
+//        ServiceStructureInfo serviceStructureInfo = serviceMethodStructureInfoMap.get(className);
+//        List<ServiceMethodStructureInfo> methodStructureInfos = serviceStructureInfo.getServiceMethodStructureInfos();
+//        for (ServiceMethodStructureInfo methodStructureInfo : methodStructureInfos){
+//            if (methodName.equals(methodStructureInfo.getMethodName())){
+//                return methodStructureInfo;
+//            }
+//        }
+//        return null;
+//    }
 
     private static Object[] getParamObjects(Map<String, String> params, ServiceMethodStructureInfo methodStructureInfo) {
         LinkedHashMap<String, ParamStructure> paramStructureLinkedHashMap = methodStructureInfo.getParamStructureMap();

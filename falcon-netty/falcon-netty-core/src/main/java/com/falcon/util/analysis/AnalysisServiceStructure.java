@@ -1,5 +1,6 @@
 package com.falcon.util.analysis;
 
+import com.falcon.server.ServerManager;
 import com.falcon.util.analysis.annotation.DESC;
 import com.falcon.util.analysis.annotation.MethodID;
 import com.falcon.util.analysis.annotation.ServiceID;
@@ -116,8 +117,8 @@ public class AnalysisServiceStructure {
 
         serviceMethodStructureInfo.setMethod(method);
         serviceMethodStructureInfo.setMethodName(method.getName());
-        serviceMethodStructureInfo.setParamTypes(ServiceManager.getMethodParamTypeString(method.getParameterTypes()));
-        serviceMethodStructureInfo.setMethodId(getMethodId(method.getAnnotations()));
+//        serviceMethodStructureInfo.setParamTypes(ServiceManager.getMethodParamTypeString(method.getParameterTypes()));
+        serviceMethodStructureInfo.setMethodId(ServiceManager.getFullMethodName(method));
         serviceMethodStructureInfo.setMethodDesc(getDesc(method.getAnnotations()));
 
         /**

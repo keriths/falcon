@@ -7,10 +7,20 @@ import com.falcon.server.ServerManager;
  */
 public class CustomerConfig {
     private String domain;
-    private Class serviceInterface;
+//    @Deprecated
+//    private Class serviceInterface;
+    private String serviceId;
     private String protocol = ServerManager.TCP;
     private String group = "default";
     private long timeout = 3000;
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
 
     public String getProtocol() {
         return protocol;
@@ -27,14 +37,16 @@ public class CustomerConfig {
     public void setDomain(String domain) {
         this.domain = domain;
     }
-
-    public Class getServiceInterface() {
-        return serviceInterface;
-    }
-
-    public void setServiceInterface(Class serviceInterface) {
-        this.serviceInterface = serviceInterface;
-    }
+//
+//    @Deprecated
+//    public Class getServiceInterface() {
+//        return serviceInterface;
+//    }
+//
+//    @Deprecated
+//    public void setServiceInterface(Class serviceInterface) {
+//        this.serviceInterface = serviceInterface;
+//    }
 
     public String getGroup() {
         return group;
@@ -53,6 +65,6 @@ public class CustomerConfig {
     }
 
     public String getCustomerInfo(){
-        return domain+"&"+serviceInterface.getName();
+        return domain+"&"+getServiceId();
     }
 }

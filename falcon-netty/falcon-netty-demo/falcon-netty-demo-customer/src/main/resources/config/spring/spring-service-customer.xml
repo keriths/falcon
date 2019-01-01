@@ -10,12 +10,13 @@
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-
     <bean id="helloWordService" class="com.falcon.spring.FalconServiceFactory" lazy-init="false">
         <property name="domain" value="falcon-netty-demo-provider"/>
         <property name="serviceInterface" value="com.falcon.demo.api.HelloWordService"/>
-        <!--<property name="protocol" value="TCP"/>-->
-        <property name="protocol" value="HTTP"/>
+        <property name="serviceId" value="com.falcon.demo.api.HelloWordService" />
+        <property name="protocol" value="TCP"/>
+        <!--<property name="protocol" value="HTTP"/>-->
         <property name="timeOut" value="100" />
     </bean>
+
 </beans>

@@ -5,7 +5,7 @@ package com.falcon.config;
  */
 public class ProviderZKNodeConfig {
     public String domain;
-    public String service;
+    public String serviceId;
     public String host;
     public int port;
     public String group;
@@ -20,12 +20,12 @@ public class ProviderZKNodeConfig {
         this.domain = domain;
     }
 
-    public String getService() {
-        return service;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public void setService(String service) {
-        this.service = service;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getHost() {

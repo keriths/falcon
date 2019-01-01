@@ -79,11 +79,12 @@ public class ServiceStructureInfo implements Serializable{
             return;
         }
         for (ServiceMethodStructureInfo serviceMethodStructureInfo : serviceMethodStructureInfos){
-            methodMap.put(serviceMethodStructureInfo.getMethodName()+serviceMethodStructureInfo.getParamTypes(),serviceMethodStructureInfo);
+            methodMap.put(serviceMethodStructureInfo.getMethodId(),serviceMethodStructureInfo);
         }
         serviceMethodStructureInfoMap = methodMap;
     }
 
+    @Deprecated
     public ServiceMethodStructureInfo getServiceMethodStructureInfo(String methodName,String paramTypes) {
         return serviceMethodStructureInfoMap.get(methodName+paramTypes);
     }

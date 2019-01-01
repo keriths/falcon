@@ -63,7 +63,7 @@ public class NettyServerChannelHandler extends SimpleChannelUpstreamHandler{
                     Object retObj =  ServiceManager.invokeServiceMethod(request, ServerManager.TCP);
                     response.setRetObject(retObj);
 //
-//                    String serviceName = request.getServiceInterfaceName();
+//                    String serviceName = request.getServiceId();
 //                    String methodName = request.getServiceMethod();
 //                    Object[] paramters = request.getParameters();
 //                    ServiceMethodStructureInfo serviceMethodStructureInfo = ServiceManager.getServiceMethodStructureInfo(serviceName,methodName,request.getParameterTypeNames());

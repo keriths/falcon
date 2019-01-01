@@ -8,19 +8,28 @@ import java.util.Random;
  */
 public class FalconRequest implements Serializable{
     private String domain;
-    private String serviceInterfaceName;
+    private String serviceId;
     private String serviceMethod;
     private Object[] parameters;
-    private String parameterTypeNames;
+//    private String parameterTypeNames;
+    private String methodId;
+
+    public String getMethodId() {
+        return methodId;
+    }
+
+    public void setMethodId(String methodId) {
+        this.methodId = methodId;
+    }
 
     private long sequence = System.currentTimeMillis()*10000000000l+(long)(new Random().nextInt(999999999));
 
-    public String getServiceInterfaceName() {
-        return serviceInterfaceName;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public void setServiceInterfaceName(String serviceInterfaceName) {
-        this.serviceInterfaceName = serviceInterfaceName;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getServiceMethod() {
@@ -62,15 +71,15 @@ public class FalconRequest implements Serializable{
 
     @Override
     public String toString() {
-        return "seq:"+getSequence()+" method:"+getServiceMethod()+" service:"+getServiceInterfaceName();
+        return "seq:"+getSequence()+" method:"+getServiceMethod()+" serviceId:"+ getServiceId();
     }
 
 
-    public String getParameterTypeNames() {
-        return parameterTypeNames;
-    }
-
-    public void setParameterTypeNames(String parameterTypeNames) {
-        this.parameterTypeNames = parameterTypeNames;
-    }
+//    public String getParameterTypeNames() {
+//        return parameterTypeNames;
+//    }
+//
+//    public void setParameterTypeNames(String parameterTypeNames) {
+//        this.parameterTypeNames = parameterTypeNames;
+//    }
 }

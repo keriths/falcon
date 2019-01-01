@@ -28,7 +28,7 @@ public class ApiInvokerHttpForJavaServlet extends HttpServlet {
             FalconResponse falconResponse = new FalconResponse();
             falconResponse.setSequence(requestDTO.getSequence());
 
-            Object obj = ServiceManager.invokeServiceMethod(requestDTO, ServerManager.HTTP);// process(requestDTO.getServiceInterfaceName(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
+            Object obj = ServiceManager.invokeServiceMethod(requestDTO, ServerManager.HTTP);// process(requestDTO.getServiceId(),requestDTO.getServiceMethod(),requestDTO.getParameterTypeNames(),requestDTO.getParameters());
             falconResponse.setSequence(requestDTO.getSequence());
             if (obj!=null){
                 ByteArrayOutputStream os = new ByteArrayOutputStream();

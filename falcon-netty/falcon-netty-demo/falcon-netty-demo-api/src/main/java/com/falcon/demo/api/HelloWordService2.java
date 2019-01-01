@@ -9,9 +9,9 @@ import java.util.List;
  * Created by fanshuai on 15/4/7.
  */
 
-public interface HelloWordService {
+public interface HelloWordService2 {
     @DESC(value = "sayHello")
     String sayHello(String name);
-    @DESC(value = "hellolist")
-    public List<HelloDTO> hellolist(List<HelloDTO> helloDTOs);
+    @DESC(value = "hello")
+    public HelloDTO hello(HelloDTO helloDTO);
 }

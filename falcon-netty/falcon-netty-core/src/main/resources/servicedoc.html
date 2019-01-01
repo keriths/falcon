@@ -2,15 +2,175 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
+    <style type="text/css">
+        div {line-height: 20px;}
+        .serviceId {width: 900px;margin: 5px 0 5px 0;border: 1px solid black}
+        .methodArray {width: 100%;}
+        .method {width: 100%;margin: 15px 0 15px 0;}
+        .methodDesc {background-color: antiquewhite}
+        .methodParam {width: 100%}
+        .title{background-color: darkgray}
+        .typeName {font-weight: bold;background-color: inherit}
+        table {border: 1px solid #ccc;width: 100%;border-collapse:collapse;margin-bottom: 5px;}
+        table thead tr td{border: 1px solid #ccc}
+        table thead tr td:nth-child(1){width: 100px}
+        table thead tr td:nth-child(2){width: 300px}
+        table thead tr td:nth-child(3){width: 500px}
+        table tbody tr td{border: 1px solid #ccc}
+    </style>
 </head>
 <body>
+<div id="serviceContext">
+    <!--&lt;!&ndash;第一个大服务&ndash;&gt;-->
+    <!--<div class="serviceId">-->
+    <!--&lt;!&ndash;服务描述&ndash;&gt;-->
+    <!--<div class="serviceName">helloWord测试服务</div>-->
+    <!--&lt;!&ndash;方法&ndash;&gt;-->
+    <!--<div class="methodArray">-->
+    <!--&lt;!&ndash;method1&ndash;&gt;-->
+    <!--<div class="method">-->
+    <!--<div class="methodDesc">hello方法</div>-->
+    <!--<div class="methodParam">-->
+    <!--<div class="title">参数列表</div>-->
+    <!--<table>-->
+    <!--<thead>-->
+    <!--<tr><td>属性</td><td>描述</td><td>类型</td></tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr><td>helloDTO</td><td></td><td>com.falcon.demo.api.dto.HelloDTO</td></tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--<div class="methodReturn">-->
+    <!--<div class="title">返回类型</div>-->
+    <!--<div>com.falcon.demo.api.dto.HelloDTO</div>-->
+    <!--</div>-->
+    <!--<div>-->
+    <!--<div class="title">类型列表</div>-->
+    <!--<div class="type">-->
+    <!--<div class="typeName">com.falcon.demo.api.dto.HelloDTO</div>-->
+    <!--<table>-->
+    <!--<thead>-->
+    <!--<tr><td>属性</td><td>描述</td><td>类型</td></tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr><td>helloDTO</td><td></td><td>com.falcon.demo.api.dto.HelloDTO</td></tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
 
-<script type="javascript" src="https://code.jquery.com/jquery-1.11.3.js"></script>
-<script type="javascript">
+    <!--<div class="type">-->
+    <!--<div class="typeName">类型2</div>-->
+    <!--<table>-->
+    <!--<thead>-->
+    <!--<tr><td>属性</td><td>描述</td><td>类型</td></tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--<tr><td>helloDTO</td><td></td><td>com.falcon.demo.api.dto.HelloDTO</td></tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--</div>-->
+
+
+    <!--</div >-->
+    <!--&lt;!&ndash;method2&ndash;&gt;-->
+    <!--<div  class="method">-->
+
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <!--第二个大服务-->
+
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<script type="text/javascript">
     $(function(){
-        alert(111);
+        $.ajax({
+            url:"/api/doc/services",
+            dataType:"json",
+            success:function(data){
+                var html = "";
+                $(data).each(function(index,item){
+                    var serviceId = item.serviceId;
+                    var serviceDesc = item.serviceDesc;
+                    var serviceMethodStructureInfos = item.serviceMethodStructureInfos;
+                    html+="<div class='serviceId'>";
+                    html+=" <div class='serviceName'>"+serviceDesc+"</div>";
+                    html+=" <div class='methodArray'>";
+                    $.each(serviceMethodStructureInfos,function(i,m){
+                        var methodDesc = m.methodDesc;
+                        var methodName = m.methodName;
+                        var methodId = m.methodId;
+                        var paramStructureMap = m.paramStructureMap;
+                        var paramTypes = m.paramTypes;
+                        var returnClassName = m.returnClassName;
+                        var classPropertiesStructureMap = m.classPropertiesStructureMap;
+                        html+="<div class='method'>";
+                        html+=" <div class='methodDesc'>"+methodId+methodDesc+"<a onclick='apiTest(this)' serviceId='"+serviceId+"' methodId='"+methodId+"'>测试</a>"+"</div>";
+
+                        html+=" <div class='methodParam'>";
+
+                        html+="     <div class='title'>参数列表</div>";
+                        html+="     <table>";
+                        html+="         <thead>";
+                        html+="             <tr><td>属性</td><td>类型</td><td>描述</td></tr>";
+                        html+="         </thead>";
+                        html+="         <tbody>";
+                        $.each(paramStructureMap,function(key){
+                            var paramName = paramStructureMap[key].paramName;
+                            var paramDesc= paramStructureMap[key].paramDesc;
+                            var paramTypeName= paramStructureMap[key].paramTypeName;
+                            html+="         <tr><td>"+paramName+"</td><td>"+paramTypeName+"</td><td>"+paramDesc+"</td></tr>";
+                        });
+                        html+="         </tbody>";
+                        html+="     </table>";
+                        html+=" </div>";
+
+                        html+=" <div class='methodReturn'>";
+                        html+="     <div class='title'>返回类型</div>";
+                        html+="     <div>"+returnClassName+"</div>";
+                        html+=" </div>";
+
+                        html+=" <div class='types'>";
+                        html+="     <div class='title'>类型列表</div>"
+                        $.each(classPropertiesStructureMap,function(key){
+                            var typeName = classPropertiesStructureMap[key].typeName;
+                            var propertyStructures = classPropertiesStructureMap[key].propertyStructures;
+                            html+=" <div class='type'>";
+                            html+="     <div class='typeName'>"+typeName+"</div>";
+                            html+="     <table>";
+                            html+="         <thead>";
+                            html+="             <tr><td>属性</td><td>类型</td><td>描述</td></tr>";
+                            html+="         </thead>";
+                            html+="         <tbody>";
+
+
+                            $.each(propertyStructures,function(propindex,prop){
+                                var propertyDesc = prop.propertyDesc;
+                                var propertyName = prop.propertyName;
+                                var propertyType = prop.propertyType;
+                                html+="         <tr><td>"+propertyName+"</td><td>"+propertyType+"</td><td>"+propertyDesc+"</td></tr>";
+                            });
+                            html+="         </tbody>";
+                            html+="     </table>";
+                            html+=" </div>";
+                        });
+                        html+=" </div>";
+                        html+="</div>";
+                    });
+                    html+="</div>";
+                });
+                $("#serviceContext").html(html);
+            }
+        });
     });
-    alert(111);
+    var apiTest = function(obj){
+        var _this = $(obj);
+        alert(_this.attr("serviceId"))
+    }
 </script>
 </body>
 </html>

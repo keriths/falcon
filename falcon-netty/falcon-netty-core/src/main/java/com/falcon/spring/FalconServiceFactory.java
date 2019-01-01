@@ -18,6 +18,7 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
 
     private String domain;
     private Class serviceInterface;
+    private String serviceId;
     private String group = "default";
     private String protocol = ServerManager.TCP;
     private CustomerConfig customerConfig ;
@@ -31,7 +32,8 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
     public void afterPropertiesSet() throws Exception {
         customerConfig = new CustomerConfig();
         customerConfig.setDomain(domain);
-        customerConfig.setServiceInterface(serviceInterface);
+//        customerConfig.setServiceInterface(serviceInterface);
+        customerConfig.setServiceId(serviceId);
         customerConfig.setGroup(group);
         customerConfig.setTimeout(timeOut);
         customerConfig.setProtocol(protocol);
@@ -48,10 +50,19 @@ public class FalconServiceFactory implements FactoryBean,InitializingBean{
             FalconRequest request = new FalconRequest();
             request.setParameters(parameters);
             request.setServiceMethod(method.getName());
-            request.setParameterTypeNames(getParamTypesName(method.getParameterTypes()));
-            request.setServiceInterfaceName(customerConfig.getServiceInterface().getName());
+//            request.setParameterTypeNames(getParamTypesName(method.getParameterTypes()));
+            request.setMethodId(method.getName()+getParamTypesName(method.getParameterTypes()));
+            request.setServiceId(customerConfig.getServiceId());
             return CustomerManager.invoke(request,customerConfig);
         }
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getParamTypesName(Class[] parameterTypes){

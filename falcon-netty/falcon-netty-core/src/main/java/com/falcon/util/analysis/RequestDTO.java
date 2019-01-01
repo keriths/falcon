@@ -31,10 +31,11 @@ public class RequestDTO implements Serializable{
      * 目标调用的远程服务的方法名
      */
     private String methodName;
-    /**
-     * 目标调用的远程服务方法的参数列表
-     */
-    private String paramTypeNames;
+    private String methodId;
+//    /**
+//     * 目标调用的远程服务方法的参数列表
+//     */
+//    private String paramTypeNames;
     /**
      * 调用远程服务方法的参数值，和参数列表11对应
      */
@@ -89,13 +90,13 @@ public class RequestDTO implements Serializable{
         this.methodName = methodName;
     }
 
-    public String getParamTypeNames() {
-        return paramTypeNames;
-    }
+//    public String getParamTypeNames() {
+//        return paramTypeNames;
+//    }
 
-    public void setParamTypeNames(String paramTypeNames) {
-        this.paramTypeNames = paramTypeNames;
-    }
+//    public void setParamTypeNames(String paramTypeNames) {
+//        this.paramTypeNames = paramTypeNames;
+//    }
 
     public Object[] getParamValues() {
         return paramValues;
@@ -103,5 +104,13 @@ public class RequestDTO implements Serializable{
 
     public void setParamValues(Object[] paramValues) {
         this.paramValues = paramValues;
+    }
+
+    public String getMethodId() {
+        return methodId;
+    }
+
+    public void setMethodId(String methodId) {
+        this.methodId = methodId;
     }
 }

@@ -7,9 +7,6 @@ import com.falcon.server.ServerManager;
 import com.falcon.server.netty.Server;
 import com.falcon.util.AppDomainNameUtils;
 import com.falcon.util.analysis.ServiceStructureInfo;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 
 import java.util.List;
 
@@ -32,8 +29,8 @@ public class ServiceRegistManager {
     public static final String serviceBaseNodePath="/falcon/Server";
     public static void registService(ProviderConfig providerConfig) throws Exception {
 //        String domain = providerConfig.getDomain();
-        String interfaceName=providerConfig.getServiceInterface().getName();
-        registService(providerConfig.getDomain(),interfaceName,providerConfig.getServerConfig().getProtocol(),providerConfig.getServerConfig().getIp(),providerConfig.getServerConfig().getPort(),providerConfig.getGroup());
+        String serviceId=providerConfig.getServiceId();
+        registService(providerConfig.getDomain(),serviceId,providerConfig.getServerConfig().getProtocol(),providerConfig.getServerConfig().getIp(),providerConfig.getServerConfig().getPort(),providerConfig.getGroup());
 //
 //        String pathNode = getServicePathNode(domain,interfaceName,providerConfig.getServerConfig().getIp(),providerConfig.getServerConfig().getPort());
 //        if(getZKClient().existsNode(pathNode)) {
@@ -47,7 +44,7 @@ public class ServiceRegistManager {
 //        }
 //        ProviderZKNodeConfig nodeValue = new ProviderZKNodeConfig();
 //        nodeValue.setDomain(domain);
-//        nodeValue.setService(interfaceName);
+//        nodeValue.setServiceId(interfaceName);
 //        nodeValue.setHost(providerConfig.getServerConfig().getIp());
 //        nodeValue.setPort(providerConfig.getServerConfig().getPort());
 //        nodeValue.setProtocol(providerConfig.getServerConfig().getProtocol());
@@ -56,10 +53,10 @@ public class ServiceRegistManager {
 //        String jsonValue = JSON.toJSONString(nodeValue);
 //        getZKClient().createNodeWithEPHEMERAL(pathNode, jsonValue.getBytes());
     }
-    public static void registService(String domain,String serviceName,String protocol,String ip,int port,String group) throws Exception {
+    public static void registService(String domain,String serviceId,String protocol,String ip,int port,String group) throws Exception {
 //        String domain = providerConfig.getDomain();
-        String interfaceName=serviceName;
-        String pathNode = getServicePathNode(domain,interfaceName,protocol,ip,port);
+//        String interfaceName=serviceName;
+        String pathNode = getServicePathNode(domain,serviceId,protocol,ip,port);
         if(getZKClient().existsNode(pathNode)) {
             long sessionId = getZKClient().getSessionId();
             long owner = getZKClient().nodeStat(pathNode).getEphemeralOwner();
@@ -71,7 +68,7 @@ public class ServiceRegistManager {
         }
         ProviderZKNodeConfig nodeValue = new ProviderZKNodeConfig();
         nodeValue.setDomain(domain);
-        nodeValue.setService(interfaceName);
+        nodeValue.setServiceId(serviceId);
         nodeValue.setHost(ip);
         nodeValue.setPort(port);
         nodeValue.setProtocol(protocol);
