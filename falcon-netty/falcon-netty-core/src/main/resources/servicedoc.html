@@ -116,15 +116,16 @@
                         html+="     <div class='title'>参数列表</div>";
                         html+="     <table>";
                         html+="         <thead>";
-                        html+="             <tr><td>属性</td><td>类型</td><td>描述</td></tr>";
+                        html+="             <tr><td>属性</td><td>类型</td><td>描述</td><td>测试</td></tr>";
                         html+="         </thead>";
                         html+="         <tbody>";
                         $.each(paramStructureMap,function(key){
                             var paramName = paramStructureMap[key].paramName;
                             var paramDesc= paramStructureMap[key].paramDesc;
                             var paramTypeName= paramStructureMap[key].paramTypeName;
-                            html+="         <tr><td>"+paramName+"</td><td>"+paramTypeName+"</td><td>"+paramDesc+"</td></tr>";
+                            html+="         <tr><td>"+paramName+"</td><td>"+html2Escape(paramTypeName)+"</td><td>"+paramDesc+"</td><td><input name='"+serviceId+methodId+"'></td></tr>";
                         });
+                        html+="         <tr><td>"+"结果"+"</td><td colspan='2'><label name='"+serviceId+methodId+"_testResult'></label></td><td>"+"<a onclick='apiTest(this)' serviceId='"+serviceId+"' methodId='"+methodId+"'>测试</a>"+"</td></tr>";
                         html+="         </tbody>";
                         html+="     </table>";
                         html+=" </div>";
@@ -140,7 +141,7 @@
                             var typeName = classPropertiesStructureMap[key].typeName;
                             var propertyStructures = classPropertiesStructureMap[key].propertyStructures;
                             html+=" <div class='type'>";
-                            html+="     <div class='typeName'>"+typeName+"</div>";
+                            html+="     <div class='typeName'>"+html2Escape(typeName)+"</div>";
                             html+="     <table>";
                             html+="         <thead>";
                             html+="             <tr><td>属性</td><td>类型</td><td>描述</td></tr>";
@@ -152,7 +153,7 @@
                                 var propertyDesc = prop.propertyDesc;
                                 var propertyName = prop.propertyName;
                                 var propertyType = prop.propertyType;
-                                html+="         <tr><td>"+propertyName+"</td><td>"+propertyType+"</td><td>"+propertyDesc+"</td></tr>";
+                                html+="         <tr><td>"+propertyName+"</td><td>"+html2Escape(propertyType)+"</td><td>"+propertyDesc+"</td></tr>";
                             });
                             html+="         </tbody>";
                             html+="     </table>";
@@ -169,7 +170,43 @@
     });
     var apiTest = function(obj){
         var _this = $(obj);
-        alert(_this.attr("serviceId"))
+        $.ajax({
+            url:"/api/doc/services?services="+_this.attr("serviceId")+"&method="+_this.attr("methodId"),
+            dataType:"json",
+            success:function(data){
+
+            }
+        });
+
+        var _this = $(obj);
+        var paramData ={};
+        paramData.serviceId =_this.attr("serviceId");
+        paramData.methodId =_this.attr("methodId");
+        paramData.domain = "TestDomain";
+        var paramValues=[];
+        var i = 0;
+        $("input[name=\""+paramData.serviceId+paramData.methodId+"\"]").each(function(){
+           paramValues[i]=$(this).val();
+            i++;
+        });
+//        alert(paramValues.val());
+        paramData.parameters = paramValues;
+        $.ajax({
+            url:"/api/invoke",
+            dataType:"json",
+            type:'post',
+            data:JSON.stringify(paramData),
+            success:function(data){
+                var la = $("label[name=\""+paramData.serviceId+paramData.methodId+"_testResult\"]");
+//                alert($("#"+paramData.serviceId+paramData.methodId+"_testResult"));
+//                $("#"+paramData.serviceId+paramData.methodId+"_testResult").html(JSON.stringify(data));
+                la.html(JSON.stringify(data));
+            }
+        });
+    }
+
+    function html2Escape(sHtml) {
+        return sHtml.replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});
     }
 </script>
 </body>

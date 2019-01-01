@@ -18,7 +18,7 @@ import java.util.List;
 public class HelloWordServiceImpl implements HelloWordService,HelloWordService2 {
     @Override
     @DESC("sayHello方法")
-    public String sayHello(@DESC("名称") String name) {
+    public String sayHello(@DESC("名称") String name,String bb) {
         try {
             Thread.sleep(100l);
         } catch (InterruptedException e) {

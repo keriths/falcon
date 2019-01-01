@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface HelloWordService2 {
     @DESC(value = "sayHello")
-    String sayHello(String name);
+    String sayHello(String name,String bb);
     @DESC(value = "hello")
     public HelloDTO hello(HelloDTO helloDTO);
 }
